@@ -3,24 +3,28 @@ package
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
+	import net.flashpunk.Engine;
+	import net.flashpunk.FP;
+	
 	/**
 	 * ...
 	 * @author Guilherme Toschi
 	 */
-	public class Main extends Sprite 
+	public class Main extends Engine 
 	{
-		
+			
 		public function Main():void 
 		{
+			super(800, 600, 60, false);
 			trace("Game Started!");
-			if (stage) init();
-			else addEventListener(Event.ADDED_TO_STAGE, init);
+			FP.console.enable();
 		}
 		
-		private function init(e:Event = null):void 
+		override public function init():void
 		{
-			removeEventListener(Event.ADDED_TO_STAGE, init);
-			// entry point
+			trace("FlashPunk has started successfully!");
+			FP.world = new Gameplay;
+			super.init();
 		}
 		
 	}
