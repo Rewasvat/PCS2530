@@ -26,10 +26,31 @@ package utils
 			super.update();
 			
 			if (parent) {
-				tiles.setRect(0, 0, 25, 20, 1);
-				tiles.clearRect(parent.gridX - Constants.BORDER_SIZE, parent.gridY - Constants.BORDER_SIZE, 
-								Constants.BORDER_SIZE*2+1, Constants.BORDER_SIZE*2+1);
+				//tiles.setRect(0, 0, 25, 20, 1);
+				ClearFogIn(parent.gridX, parent.gridY, Constants.BORDER_SIZE);
 			}
+		}
+		
+		public function ClearFogIn(centerX:int, centerY:int, radius:int):void {
+			var fogX:int;
+			var fogY:int = centerY;
+			var fogH:int = 1;
+			for (var i:int = -radius; i <= radius; i++) {
+				fogX = centerX + i;
+				tiles.clearRect(fogX, fogY, 1, fogH );
+				if (i < 0) {
+					fogH += 2;
+					fogY -= 1;
+				}
+				else if (i >= 0) {
+					fogH -= 2;
+					fogY += 1;
+				}
+			}
+			
+			/******/
+			/*tiles.clearRect(centerX - Constants.BORDER_SIZE, centerY - Constants.BORDER_SIZE, 
+								Constants.BORDER_SIZE*2+1, Constants.BORDER_SIZE*2+1);*/
 		}
 	}
 }

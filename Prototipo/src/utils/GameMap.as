@@ -27,7 +27,7 @@ package utils
 						  DIRT);
 		}
 		
-		public function PlayerMovedTo(column:int, row:int)
+		public function PlayerMovedTo(column:int, row:int):void
 		{
 			if(tiles.getTile(column,row) == DIRT) {
 				tiles.setTile(column, row, NONE);

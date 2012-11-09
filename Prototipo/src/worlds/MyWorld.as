@@ -27,14 +27,14 @@ package worlds
 		{
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
-			for (var i:int; i < Constants.MAP_WIDTH; i++) {
+			var i:int;
+			for (i=0; i < Constants.MAP_WIDTH; i++) {
 				grid[i] = new Vector.<BaseGameObj>(Constants.MAP_HEIGHT);
 			}
 			
 			player = new Player(3, 8);
 			grid[3][8] = player;
 			
-			var i:int;
 			add(map);
 			add(player);
 			for (i = 0; i < 80;i++) {
