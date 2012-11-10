@@ -8,6 +8,8 @@ package entities
 	import net.flashpunk.FP;
 	import utils.Fog;
 	import utils.Constants;
+	import worlds.MyWorld;
+	import utils.GameMap;
 	
 	/**
 	 * ...
@@ -28,9 +30,9 @@ package entities
 		
 		public function Player(gridX:int, gridY:int) 
 		{
-			tiles = new Tilemap(PLAYER, 32, 32, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
-			graphic = tiles;
-			tiles.setTile(0, 0, 0);
+			//tiles = new Tilemap(PLAYER, 32, 32, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
+			//graphic = tiles;
+			//tiles.setTile(0, 0, 0);
 			setHitbox(Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
 			this.gridX = gridX;
 			this.gridY = gridY;
@@ -44,7 +46,8 @@ package entities
 			UpdateMovement();
 			
 			var collided:Boolean = CheckForCollisions();
-			if (collided) {
+			if (collided) 
+			{
 				x = last_stable_x;
 				y = last_stable_y;
 			}
@@ -67,39 +70,29 @@ package entities
 		
 		public function UpdateMovement():void 
 		{
-			if (Input.pressed(Key.LEFT)) 
-			{ 
-				tiles.setTile(gridX, gridY , LEFT); 
-				if(x > Constants.BORDER_SIZE*Constants.TILE_WIDTH)
+			
+			if(Input.mousePressed)
+			{
+				gridX = int(Input.mouseX/Constants.TILE_WIDTH);
+				gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
+				if (verifyTiles(gridX, gridY))
 				{
-					x -= Constants.TILE_WIDTH;
+					x = int(Input.mouseX / Constants.TILE_WIDTH) * Constants.TILE_WIDTH;
+					y = int(Input.mouseY / Constants.TILE_HEIGHT) * Constants.TILE_HEIGHT;
 				}
-			}
-			else if (Input.pressed(Key.RIGHT)) 
-			{ 
-				tiles.setTile(gridX, gridY , RIGHT);
-				if (x < (Constants.MAP_WIDTH-Constants.BORDER_SIZE-1) * Constants.TILE_WIDTH)
-				{
-					x += Constants.TILE_WIDTH; 
-				}
-			}
-			else if (Input.pressed(Key.UP)) 
-			{ 
-				tiles.setTile(gridX, gridY, UP);
-				if (y > Constants.BORDER_SIZE * Constants.TILE_HEIGHT)
-				{
-					y -= Constants.TILE_HEIGHT; 
-				}
-			}
-			else if (Input.pressed(Key.DOWN)) 
-			{ 
-				tiles.setTile(gridX, gridY, DOWN);
-				if (y < (Constants.MAP_HEIGHT-Constants.BORDER_SIZE-1) * Constants.TILE_HEIGHT)
-				{
-					y += Constants.TILE_HEIGHT; 
-				}
+				
 			}
 		}
+		
+		public function verifyTiles(gridX:int,gridY:int):Boolean
+		{
+			var myworld:MyWorld = world as MyWorld;
+			if (myworld.map.getTile(gridX -1, gridY) == GameMap.NONE || myworld.map.getTile(gridX +1, gridY) == GameMap.NONE ||myworld.map.getTile(gridX, gridY-1) == GameMap.NONE || myworld.map.getTile(gridX, gridY+1) == GameMap.NONE)
+			{
+				return true;
+			}
+			return false;
+		}
 	}
-
 }
+	

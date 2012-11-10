@@ -19,7 +19,7 @@ package worlds
 	public class MyWorld extends World 
 	{
 		private var player:Player;
-		private var map:GameMap;
+		public var map:GameMap;
 		
 		private var grid:Vector.<Vector.<BaseGameObj>>;
 		
@@ -37,7 +37,7 @@ package worlds
 			
 			add(map);
 			add(player);
-			for (i = 0; i < 80;i++) {
+			for (i = 0; i < 10;i++) {
 				var rock:Rock = new Rock();
 				setGridPosForObj(rock);
 				add(rock);
