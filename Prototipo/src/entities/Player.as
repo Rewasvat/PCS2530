@@ -8,7 +8,7 @@ package entities
 	import net.flashpunk.FP;
 	import utils.Fog;
 	import utils.Constants;
-	import worlds.MyWorld;
+	import worlds.GameWorld;
 	import utils.GameMap;
 	
 	/**
@@ -86,7 +86,7 @@ package entities
 		
 		public function verifyTiles(gridX:int,gridY:int):Boolean
 		{
-			var myworld:MyWorld = world as MyWorld;
+			var myworld:GameWorld = world as GameWorld;
 			if (myworld.map.getTile(gridX - 1, gridY) == GameMap.NONE ||
 				myworld.map.getTile(gridX + 1, gridY) == GameMap.NONE ||
 				myworld.map.getTile(gridX, gridY - 1) == GameMap.NONE ||
