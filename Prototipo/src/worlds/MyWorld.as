@@ -11,6 +11,7 @@ package worlds
 	import utils.Fog;
 	import utils.GameMap;
 	import utils.Constants;
+	import utils.TunnelManager;
 	
 	/**
 	 * ...
@@ -20,11 +21,14 @@ package worlds
 	{
 		private var player:Player;
 		public var map:GameMap;
+		private var tunnelManager:TunnelManager;
 		
 		private var grid:Vector.<Vector.<BaseGameObj>>;
 		
 		public function MyWorld() 
 		{
+			tunnelManager = new TunnelManager();
+			
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
 			var i:int;

@@ -12,20 +12,19 @@ package entities
 	public class Tunnel extends BaseGameObj 
 	{
 		private var tiles: Tilemap;
-		[Embed(source = '../assets/Fog.png')] private const TUNNEL:Class;
+		[Embed(source = '../assets/tunnels.png')] private const TUNNEL:Class;
 		
 		private var manager:TunnelManager;
 		
 		private var tunnelWidth:int;
 		private var tunnelHeight:int;
 		
-		public function Tunnel(maxWidth:int, maxHeight:int, manager:TunnelManager) 
+		public function Tunnel(tunnelWidth:int, tunnelHeight:int, manager:TunnelManager) 
 		{
 			this.manager = manager;
 			this.tunnelWidth = tunnelWidth;
 			this.tunnelHeight = tunnelHeight;
-			tiles = new Tilemap(TUNNEL, Constants.TILE_WIDTH * tunnelWidth, Constants.TILE_HEIGHT * tunnelHeight,
-								Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
+			tiles = new Tilemap(TUNNEL, 96, 64, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
 			graphic = tiles;
 			
 		}

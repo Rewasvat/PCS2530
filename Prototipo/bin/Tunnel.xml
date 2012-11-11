@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <tunnel>
 	<blocks>
-		<block index="0" up="true" down="true" left="false" right="false"/>
-		<block index="1" up="false" down="false" left="true" right="true"/>
+		<block index="0" up="1" down="1" left="0" right="0"/> <!-- 1 for True, 0 for False -->
+		<block index="1" up="0" down="0" left="1" right="1"/>
 	</blocks>
 	
-	<sets>
-		<set width="3" height="3">
+	<tunnels>
+		<tunnel width="3" height="3">
 			<piece type="0" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="0" posX="1" posY="2" />
-		</set>
-	</sets>
+		</tunnel>
+	</tunnels>
 </tunnel>
