@@ -1,2 +1,4 @@
-/bin/*
+*.js
+*.swf
+*.html
 /obj/*

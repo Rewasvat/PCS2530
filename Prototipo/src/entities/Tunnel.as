@@ -2,6 +2,8 @@ package entities
 {
 	import net.flashpunk.Entity;
 	import net.flashpunk.graphics.Tilemap;
+	import utils.TunnelManager;
+	import utils.Constants;
 	
 	/**
 	 * ...
@@ -10,13 +12,26 @@ package entities
 	public class Tunnel extends BaseGameObj 
 	{
 		private var tiles: Tilemap;
-		[Embed(source = '../assets/mulher0.png')] private const PLAYER:Class;
+		[Embed(source = '../assets/Fog.png')] private const TUNNEL:Class;
 		
-		public function Tunnel() 
+		private var manager:TunnelManager;
+		
+		private var tunnelWidth:int;
+		private var tunnelHeight:int;
+		
+		public function Tunnel(maxWidth:int, maxHeight:int, manager:TunnelManager) 
 		{
-			tiles = new Tilemap(PLAYER, 32, 128, 64, 64);
-			graphic = _Tiles;
-			tiles.setTile(0, 0, 0);
+			this.manager = manager;
+			this.tunnelWidth = tunnelWidth;
+			this.tunnelHeight = tunnelHeight;
+			tiles = new Tilemap(TUNNEL, Constants.TILE_WIDTH * tunnelWidth, Constants.TILE_HEIGHT * tunnelHeight,
+								Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
+			graphic = tiles;
+			
+		}
+		
+		public function SetTunnelTile(posX:int, posY:int, type:int):void {
+			this.tiles.setTile(posX, posY, type);
 		}
 		
 	}
