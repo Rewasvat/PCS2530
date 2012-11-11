@@ -73,12 +73,12 @@ package entities
 			
 			if(Input.mousePressed)
 			{
-				gridX = int(Input.mouseX/Constants.TILE_WIDTH);
-				gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
-				if (verifyTiles(gridX, gridY))
+				var posX:int = int(Input.mouseX/Constants.TILE_WIDTH);
+				var posY:int = int(Input.mouseY/Constants.TILE_HEIGHT);
+				if (verifyTiles(posX, posY))
 				{
-					x = int(Input.mouseX / Constants.TILE_WIDTH) * Constants.TILE_WIDTH;
-					y = int(Input.mouseY / Constants.TILE_HEIGHT) * Constants.TILE_HEIGHT;
+					gridX = posX;
+					gridY = posY;
 				}
 				
 			}
@@ -87,7 +87,10 @@ package entities
 		public function verifyTiles(gridX:int,gridY:int):Boolean
 		{
 			var myworld:MyWorld = world as MyWorld;
-			if (myworld.map.getTile(gridX -1, gridY) == GameMap.NONE || myworld.map.getTile(gridX +1, gridY) == GameMap.NONE ||myworld.map.getTile(gridX, gridY-1) == GameMap.NONE || myworld.map.getTile(gridX, gridY+1) == GameMap.NONE)
+			if (myworld.map.getTile(gridX - 1, gridY) == GameMap.NONE ||
+				myworld.map.getTile(gridX + 1, gridY) == GameMap.NONE ||
+				myworld.map.getTile(gridX, gridY - 1) == GameMap.NONE ||
+				myworld.map.getTile(gridX, gridY + 1) == GameMap.NONE)
 			{
 				return true;
 			}
