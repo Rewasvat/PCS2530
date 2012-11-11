@@ -12,9 +12,9 @@ package utils
 		private var tiles: Tilemap;
 		[Embed(source = '../assets/tiles.png')] private const GROUND:Class;
 		
-		private static const NONE:int = 0;
-		private static const SAND:int = 2;
-		private static const DIRT:int = 3;
+		public static const NONE:int = 0;
+		public static const SAND:int = 2;
+		public static const DIRT:int = 3;
 		
 		public function GameMap() 
 		{
@@ -34,6 +34,10 @@ package utils
 			}
 		}
 		
+		public function getTile(column:int, row:int):int
+		{
+			return tiles.getTile(column, row);
+		}
 	}
 
 }

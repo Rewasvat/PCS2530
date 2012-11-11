@@ -9,7 +9,7 @@ package
 	{
 		public function Main()
 		{
-			super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 25, false);
+			super(Constants.GAME_WIDTH, Constants.GAME_HEIGHT, 60, false);
 			FP.world = new MyWorld;
 		}
 
