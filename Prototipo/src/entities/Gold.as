@@ -24,11 +24,6 @@ package entities
 			
 		}
 		
-		public function destroy():void
-		{
-			world.remove(this);
-		}
-		
 	}
 
 }

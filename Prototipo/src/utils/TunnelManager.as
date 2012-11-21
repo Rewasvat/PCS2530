@@ -11,8 +11,8 @@ package utils
 	 */
 	public class TunnelManager 
 	{
-		private var tunnels:Vector.<Tunnel>;
-		private var blocks:Vector.<TunnelBlock>
+		public var tunnels:Vector.<Tunnel>;
+		private var blocks:Vector.<TunnelBlock>;
 		
 		public function TunnelManager() 
 		{
@@ -50,6 +50,15 @@ package utils
 				}
 				tunnels.push(t);
 			}
+		}
+		
+		public function GetBlock(type:int):TunnelBlock {
+			for (var i:int = 0; i < blocks.length; i++) {
+				if (blocks[i].index == type) {
+					return blocks[i];
+				}
+			}
+			return null;
 		}
 	}
 

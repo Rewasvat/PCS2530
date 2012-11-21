@@ -23,6 +23,9 @@ package entities
 		private var last_stable_x:int;
 		private var last_stable_y:int;
 		
+		public var canMove:Boolean;
+		private var gold_amount:int;
+		
 		private static const DOWN:int = 0;
 		private static const LEFT:int = 1;
 		private static const RIGHT:int = 2;
@@ -37,6 +40,8 @@ package entities
 			this.gridX = gridX;
 			this.gridY = gridY;
 			layer = 0;
+			canMove = true;
+			gold_amount = 0;
 		}
 		
 		override public function update():void
@@ -63,6 +68,7 @@ package entities
 			var gold:Gold = collide("gold", x, y) as Gold;
 			if (gold) {
 				gold.destroy();
+				gold_amount++;
 			}
 			
 			return false;
@@ -70,8 +76,7 @@ package entities
 		
 		public function UpdateMovement():void 
 		{
-			
-			if(Input.mousePressed)
+			if(Input.mousePressed && canMove)
 			{
 				var posX:int = int(Input.mouseX/Constants.TILE_WIDTH);
 				var posY:int = int(Input.mouseY/Constants.TILE_HEIGHT);
@@ -84,13 +89,14 @@ package entities
 			}
 		}
 		
-		public function verifyTiles(gridX:int,gridY:int):Boolean
+		public function verifyTiles(gX:int,gY:int):Boolean
 		{
 			var myworld:GameWorld = world as GameWorld;
-			if (myworld.map.getTile(gridX - 1, gridY) == GameMap.NONE ||
-				myworld.map.getTile(gridX + 1, gridY) == GameMap.NONE ||
-				myworld.map.getTile(gridX, gridY - 1) == GameMap.NONE ||
-				myworld.map.getTile(gridX, gridY + 1) == GameMap.NONE)
+			/*if (myworld.map.getTile(gX - 1, gY) == GameMap.NONE ||
+				myworld.map.getTile(gX + 1, gY) == GameMap.NONE ||
+				myworld.map.getTile(gX, gY - 1) == GameMap.NONE ||
+				myworld.map.getTile(gX, gY + 1) == GameMap.NONE)*/
+			if (myworld.canGoTo(gX, gY))
 			{
 				return true;
 			}

@@ -2,7 +2,7 @@
 <tunnel>
 	<blocks>
 		<block index="0" up="1" down="1" left="0" right="0"/> <!-- 1 for True, 0 for False -->
-		<block index="1" up="0" down="0" left="1" right="1"/>
+		<block index="3" up="0" down="0" left="1" right="1"/>
 	</blocks>
 	
 	<tunnels>

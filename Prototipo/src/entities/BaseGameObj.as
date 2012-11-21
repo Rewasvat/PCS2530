@@ -4,6 +4,7 @@ package entities
 	import net.flashpunk.Graphic;
 	import net.flashpunk.Mask;
 	import utils.Constants;
+	import worlds.GameWorld;
 	
 	/**
 	 * ...
@@ -23,6 +24,12 @@ package entities
 			
 		}
 		
+		public function destroy():void
+		{
+			var myworld:GameWorld = world as GameWorld;
+			world.remove(this);
+			myworld.grid[gridX][gridY] = null;
+		}
 	}
 
 }

@@ -1,5 +1,6 @@
 package worlds
 {
+	import entities.Tunnel;
 	import net.flashpunk.World;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
@@ -11,6 +12,7 @@ package worlds
 	import utils.Fog;
 	import utils.GameMap;
 	import utils.Constants;
+	import utils.TunnelBlock;
 	import utils.TunnelManager;
 	
 	/**
@@ -22,12 +24,18 @@ package worlds
 		private var player:Player;
 		public var map:GameMap;
 		private var tunnelManager:TunnelManager;
+		private var placingTunnel:Boolean ;
+		private var tunnelIndex:int;
+		private var tunnelObj:Tunnel;
 		
-		private var grid:Vector.<Vector.<BaseGameObj>>;
+		public var grid:Vector.<Vector.<BaseGameObj>>;
 		
 		public function GameWorld() 
 		{
 			tunnelManager = new TunnelManager();
+			placingTunnel = false;
+			tunnelIndex = 0;
+			tunnelObj = null;
 			
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
@@ -37,7 +45,7 @@ package worlds
 			}
 			
 			player = new Player(3, 8);
-			grid[3][8] = player;
+			grid[3][8] = player; // we only need this when generating the map, remove it later
 			
 			add(map);
 			add(player);
@@ -52,6 +60,8 @@ package worlds
 				add(gold);
 			}
 			add(new Fog(player) );
+			
+			grid[3][8] = null;
 		}
 		
 		private function setGridPosForObj(obj:BaseGameObj):void {
@@ -73,6 +83,8 @@ package worlds
 		{
 			super.update();
 			UpdateMap();
+			UpdateTunnelCreation();
+			player.canMove = !placingTunnel;
 			if (Input.pressed(Key.ESCAPE)) {
 				/*TODO: fechar o jogo...? */
 			}
@@ -80,6 +92,136 @@ package worlds
 		
 		public function UpdateMap():void {
 			map.PlayerMovedTo(player.gridX, player.gridY);
+		}
+		
+		public function UpdateTunnelCreation():void {
+			if (!placingTunnel) {
+				if (Input.pressed(Key.T)) {
+					placingTunnel = true;
+					resetTunnelObj();
+				}
+			}
+			else {
+				tunnelObj.gridX = int(Input.mouseX/Constants.TILE_WIDTH);
+				tunnelObj.gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
+				if (Input.mousePressed) {
+					trace("trying to place tunnel");
+					if (checkForTunnelPlacement()) {
+						trace("tunnel created!");
+						addTunnel();
+						tunnelObj = null;
+						placingTunnel = false;
+					}
+				}
+				else if (Input.pressed(Key.T)) {
+					placingTunnel = false;
+					remove(tunnelObj);
+					tunnelObj = null;
+				}
+			}
+			HandleTunnelIndex();
+		}
+		private function HandleTunnelIndex():void {
+			if (!placingTunnel) {
+				if (Input.pressed(Key.R)) {
+					tunnelIndex--;
+					if (tunnelIndex < 0) {
+						tunnelIndex = tunnelManager.tunnels.length - 1;
+					}
+					trace("Tunnel Index = " + tunnelIndex.toString());
+				}
+				else if (Input.pressed(Key.Y)) {
+					tunnelIndex++;
+					if (tunnelIndex >= tunnelManager.tunnels.length) {
+						tunnelIndex = 0;
+					}
+					trace("Tunnel Index = " + tunnelIndex.toString());
+				}
+			}
+			else {
+				if (Input.pressed(Key.R)) {
+					tunnelIndex--;
+					if (tunnelIndex < 0) {
+						tunnelIndex = tunnelManager.tunnels.length - 1;
+					}
+					trace("Tunnel Index = " + tunnelIndex.toString());
+					resetTunnelObj();
+				}
+				else if (Input.pressed(Key.Y)) {
+					tunnelIndex++;
+					if (tunnelIndex >= tunnelManager.tunnels.length) {
+						tunnelIndex = 0;
+					}
+					trace("Tunnel Index = " + tunnelIndex.toString());
+					resetTunnelObj();
+				}
+			}
+		}
+		private function resetTunnelObj():void {
+			if (tunnelObj) {
+				remove(tunnelObj);
+			}
+			tunnelObj = tunnelManager.tunnels[tunnelIndex].Clone();
+			add(tunnelObj);
+		}
+		private function checkForTunnelPlacement():Boolean {
+			var gX:int, gY:int;
+			for (var i:int = 0; i < tunnelObj.tunnelWidth; i++) {
+				for (var j:int = 0; j < tunnelObj.tunnelHeight; j++)  {
+					gX = tunnelObj.gridX + i;
+					gY = tunnelObj.gridY + j;
+					var tb:TunnelBlock = tunnelObj.GetBlockInTile(gX, gY);
+					if ( tunnelObj.GetBlockInTile(gX, gY) && (map.getTile(gX, gY) != GameMap.NONE || grid[gX][gY]) ) {
+						return false;
+					}
+				}
+			}
+			return true;
+		}
+		private function addTunnel():void {
+			var gX:int, gY:int;
+			for (var i:int = 0; i < tunnelObj.tunnelWidth; i++) {
+				for (var j:int = 0; j < tunnelObj.tunnelHeight; j++)  {
+					gX = tunnelObj.gridX + i;
+					gY = tunnelObj.gridY + j;
+					if ( tunnelObj.GetBlockInTile(gX, gY) ) {
+						grid[gX][gY] = tunnelObj;
+					}
+				}
+			}
+		}
+		
+		private function canGoToFrom(x:int, y:int, dir:String):Boolean {
+			if (grid[x][y]) {
+				if ( grid[x][y].type == "rock") {
+					return false;
+				}
+				else if (grid[x][y].type == "tunnel") {
+					/*TODO: checar se da pra passar*/
+					var t:Tunnel = grid[x][y] as Tunnel;
+					return t.CheckPassage(x, y, dir);
+				}
+			}
+			return true;
+		}
+		public function canGoTo(x:int, y:int):Boolean {
+			if (map.getTile(x, y) == GameMap.NONE) {
+				/*Target tile is already opened, does not matter if player can go or not*/
+			}
+			if (grid[x][y]) {
+				if ( grid[x][y].type == "rock") {
+					return false;
+				}
+			}
+			
+			if ( (map.getTile(x - 1, y) == GameMap.NONE) && canGoToFrom(x - 1, y, "right") ||
+				 (map.getTile(x + 1, y) == GameMap.NONE) && canGoToFrom(x + 1, y, "left") ||
+				 (map.getTile(x, y - 1) == GameMap.NONE) && canGoToFrom(x, y - 1, "down") ||
+				 (map.getTile(x, y + 1) == GameMap.NONE) && canGoToFrom(x, y + 1, "up") )
+			{
+				return true;
+			}
+			return false;
 		}
 	}
 

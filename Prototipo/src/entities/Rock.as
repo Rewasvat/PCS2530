@@ -20,13 +20,8 @@ package entities
 			type = "rock";
 			this.gridX = gridX;
 			this.gridY = gridY;
-			layer = 1;
+			layer = 0;
 			
-		}
-		
-		public function destroy():void
-		{
-			world.remove(this);
 		}
 		
 	}
