@@ -92,10 +92,6 @@ package entities
 		public function verifyTiles(gX:int,gY:int):Boolean
 		{
 			var myworld:GameWorld = world as GameWorld;
-			/*if (myworld.map.getTile(gX - 1, gY) == GameMap.NONE ||
-				myworld.map.getTile(gX + 1, gY) == GameMap.NONE ||
-				myworld.map.getTile(gX, gY - 1) == GameMap.NONE ||
-				myworld.map.getTile(gX, gY + 1) == GameMap.NONE)*/
 			if (myworld.canGoTo(gX, gY))
 			{
 				return true;

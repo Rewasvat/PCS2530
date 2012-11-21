@@ -15,6 +15,9 @@ package entities
 		private var tiles: Tilemap;
 		[Embed(source = '../assets/tunnels.png')] private const TUNNEL:Class;
 		
+		public function get color():uint { return this.tiles.color; }
+		public function set color(c:uint):void { this.tiles.color = c;  }
+		
 		private var manager:TunnelManager;
 		
 		public var tunnelWidth:int;
@@ -40,6 +43,8 @@ package entities
 					grid[i][j] = -1;
 				}
 			}
+			
+			tiles.color = 0xff0000;
 		}
 		
 		public function SetTunnelTile(posX:int, posY:int, type:int):void {

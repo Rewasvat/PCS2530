@@ -104,9 +104,10 @@ package worlds
 			else {
 				tunnelObj.gridX = int(Input.mouseX/Constants.TILE_WIDTH);
 				tunnelObj.gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
-				if (Input.mousePressed) {
+				if (checkForTunnelPlacement()) {
 					trace("trying to place tunnel");
-					if (checkForTunnelPlacement()) {
+					tunnelObj.color = 0x00ff00;
+					if (Input.mousePressed) {
 						trace("tunnel created!");
 						addTunnel();
 						tunnelObj = null;
@@ -117,6 +118,9 @@ package worlds
 					placingTunnel = false;
 					remove(tunnelObj);
 					tunnelObj = null;
+				}
+				else {
+					tunnelObj.color = 0xff0000;
 				}
 			}
 			HandleTunnelIndex();
@@ -186,6 +190,7 @@ package worlds
 					gY = tunnelObj.gridY + j;
 					if ( tunnelObj.GetBlockInTile(gX, gY) ) {
 						grid[gX][gY] = tunnelObj;
+						tunnelObj.color = 0xffffff;
 					}
 				}
 			}
