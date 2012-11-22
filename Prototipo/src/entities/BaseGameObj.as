@@ -24,11 +24,28 @@ package entities
 			
 		}
 		
+		public function IsNear(obj:BaseGameObj):Boolean {
+			return (checkCoord(gridX, obj.gridX, 1) && checkCoord(gridY, obj.gridY, 0)) ||
+					(checkCoord(gridX, obj.gridX, -1) && checkCoord(gridY, obj.gridY, 0)) ||
+					(checkCoord(gridX, obj.gridX, 0) && checkCoord(gridY, obj.gridY, 1)) ||
+					(checkCoord(gridX, obj.gridX, 0) && checkCoord(gridY, obj.gridY, -1)) ;
+		}
+		private function checkCoord(a:int, b:int, dist:int):Boolean {
+			return a - dist == b;
+		}
+		
 		public function destroy():void
 		{
 			var myworld:GameWorld = world as GameWorld;
+			myworld.removeFromGrid(this);
 			world.remove(this);
-			myworld.grid[gridX][gridY] = null;
+		}
+		
+		public static function CreateDummy(gX:int, gY:int):BaseGameObj {
+			var obj:BaseGameObj = new BaseGameObj();
+			obj.gridX = gX;
+			obj.gridY = gY;
+			return obj;
 		}
 	}
 

@@ -48,7 +48,7 @@ package entities
 		{
 			last_stable_x = x;
 			last_stable_y = y;
-			UpdateMovement();
+			var moved:Boolean = UpdateMovement();
 			
 			var collided:Boolean = CheckForCollisions();
 			if (collided) 
@@ -56,15 +56,14 @@ package entities
 				x = last_stable_x;
 				y = last_stable_y;
 			}
+			else if (moved) {
+				var myworld:GameWorld = world as GameWorld;
+				myworld.UpdateMap();
+			}
 		}
 		
 		public function CheckForCollisions():Boolean 
 		{
-			var rock:Rock = collide("rock", x, y) as Rock;
-			if (rock) {
-				return true;
-			}
-			
 			var gold:Gold = collide("gold", x, y) as Gold;
 			if (gold) {
 				gold.destroy();
@@ -74,7 +73,7 @@ package entities
 			return false;
 		}
 		
-		public function UpdateMovement():void 
+		public function UpdateMovement():Boolean 
 		{
 			if(Input.mousePressed && canMove)
 			{
@@ -84,9 +83,11 @@ package entities
 				{
 					gridX = posX;
 					gridY = posY;
+					return true;
 				}
 				
 			}
+			return false;
 		}
 		
 		public function verifyTiles(gX:int,gY:int):Boolean

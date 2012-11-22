@@ -21,6 +21,8 @@ package worlds
 	 */
 	public class GameWorld extends World 
 	{
+		private var entryPoint:BaseGameObj;
+		private var exitPoint:BaseGameObj;
 		private var player:Player;
 		public var map:GameMap;
 		private var tunnelManager:TunnelManager;
@@ -29,6 +31,8 @@ package worlds
 		private var tunnelObj:Tunnel;
 		
 		public var grid:Vector.<Vector.<BaseGameObj>>;
+		private var riskMatrix:Vector.<Vector.<Number>>;
+		
 		
 		public function GameWorld() 
 		{
@@ -39,16 +43,28 @@ package worlds
 			
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
+			riskMatrix = new Vector.<Vector.<Number>>(Constants.MAP_WIDTH);
 			var i:int;
 			for (i=0; i < Constants.MAP_WIDTH; i++) {
 				grid[i] = new Vector.<BaseGameObj>(Constants.MAP_HEIGHT);
+				riskMatrix[i] = new Vector.<Number>(Constants.MAP_HEIGHT);
 			}
 			
-			player = new Player(3, 8);
-			grid[3][8] = player; // we only need this when generating the map, remove it later
+			entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, 8);
+			addToGrid(entryPoint);
+			exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, 8);
+			addToGrid(exitPoint);
 			
+			player = new Player(entryPoint.gridX, entryPoint.gridY);
+
 			add(map);
 			add(player);
+			generateEntities();
+			add(new Fog(player) );
+			UpdateMap();
+		}
+		private function generateEntities():void {
+			var i:int;
 			for (i = 0; i < 10;i++) {
 				var rock:Rock = new Rock();
 				setGridPosForObj(rock);
@@ -59,11 +75,7 @@ package worlds
 				setGridPosForObj(gold);
 				add(gold);
 			}
-			add(new Fog(player) );
-			
-			grid[3][8] = null;
 		}
-		
 		private function setGridPosForObj(obj:BaseGameObj):void {
 			var x:int, y:int;
 			while (true) {
@@ -78,21 +90,103 @@ package worlds
 				}
 			}
 		}
+		public function addToGrid(obj:BaseGameObj):void {
+			grid[obj.gridX][obj.gridY] = obj;
+		}
+		public function removeFromGrid(obj:BaseGameObj):void {
+			grid[obj.gridX][obj.gridY] = null;
+		}
 		
 		override public function update():void 
 		{
 			super.update();
-			UpdateMap();
+			//UpdateMap();
 			UpdateTunnelCreation();
 			player.canMove = !placingTunnel;
-			if (Input.pressed(Key.ESCAPE)) {
-				/*TODO: fechar o jogo...? */
+			
+			if (cavingIn) {
+				if (caveInCounter > caveInLimit) {
+					trace("FAILED");
+					cavingIn = false;
+				}
+				caveInCounter += FP.elapsed;
 			}
 		}
 		
-		public function UpdateMap():void {
-			map.PlayerMovedTo(player.gridX, player.gridY);
+		private function checkTunnelStatus():void {
+			
 		}
+		
+		private var caveInCounter:Number;
+		private var caveInLimit:Number;
+		private var cavingIn:Boolean;
+		public function UpdateMap():void {
+			if (player.IsNear(exitPoint)) {
+				trace("TUNNEL COMPLETED!");
+			}
+			map.PlayerMovedTo(player.gridX, player.gridY);
+			
+			var totalRisk:Number = 0;
+			var risk:Number;
+			var i:int, j:int;
+			for (i = 0; i < Constants.MAP_WIDTH; i++) {
+				for (j = 0; j < Constants.MAP_HEIGHT; j++) {
+					if (map.getTile(i, j) == GameMap.NONE && grid[i][j] == null) {
+						risk = getRiskForTile(i, j);
+						totalRisk += risk;
+						riskMatrix[i][j] = risk;
+					}
+				}
+			}
+			if (!cavingIn && totalRisk > Constants.RISK_THRESHOLD) {
+				cavingIn = true;
+				caveInCounter = 0;
+				caveInLimit = Constants.DEFAULT_CAVEIN_LIMIT * (1 - (totalRisk - Constants.RISK_THRESHOLD) / Constants.RISK_THRESHOLD);
+				trace("RISK TOO GREAT - STARTING CAVE IN "+caveInLimit.toString()+" seconds");
+			}
+			else if (cavingIn && totalRisk < Constants.RISK_THRESHOLD) {
+				cavingIn = false;
+				trace("NO LONGER IN RISK");
+			}
+			else if (cavingIn) {
+				/*We are already caving in and the risk is still high - update limit */
+				caveInLimit = Constants.DEFAULT_CAVEIN_LIMIT * (1 - (totalRisk - Constants.RISK_THRESHOLD) / Constants.RISK_THRESHOLD);
+				trace("RISK STILL HIGH - new cave in limit is "+caveInLimit.toString()+" seconds");
+			}
+			trace("RISK: " + totalRisk.toString());
+		}
+		private function getRiskForTile(a:int, b:int):Number {
+			var risk:Number = 0;
+			var i:int, j:int, x:int, y:int;
+			for (i = -1; i < 2; i++) {
+				for (j = -1; j < 2; j++) {
+					x = a + i;
+					y = b + j;
+					if (i != 0 && j != 0 && 
+						x >= 0 && x < Constants.MAP_WIDTH &&
+						y >= 0 && y < Constants.MAP_HEIGHT) {
+						/****/
+						if (grid[x][y] && grid[x][y].type == "tunnel") {
+							risk += Constants.TUNNEL_RISK;
+						}
+						else if (grid[x][y] && grid[x][y].type == "rock") {
+							risk += Constants.ROCK_RISK;
+						}
+						else if (map.getTile(x, y) == GameMap.DIRT) {
+							risk += Constants.DIRT_RISK;
+						}
+						else if (map.getTile(x, y) == GameMap.SAND) {
+							risk += Constants.SAND_RISK;
+						}
+						else if (map.getTile(x, y) == GameMap.NONE) {
+							risk += Constants.NONE_RISK;
+						}
+					}
+				}
+			}
+			return risk;
+		}
+
 		
 		public function UpdateTunnelCreation():void {
 			if (!placingTunnel) {
@@ -105,7 +199,7 @@ package worlds
 				tunnelObj.gridX = int(Input.mouseX/Constants.TILE_WIDTH);
 				tunnelObj.gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
 				if (checkForTunnelPlacement()) {
-					trace("trying to place tunnel");
+					//trace("trying to place tunnel");
 					tunnelObj.color = 0x00ff00;
 					if (Input.mousePressed) {
 						trace("tunnel created!");
@@ -190,10 +284,11 @@ package worlds
 					gY = tunnelObj.gridY + j;
 					if ( tunnelObj.GetBlockInTile(gX, gY) ) {
 						grid[gX][gY] = tunnelObj;
-						tunnelObj.color = 0xffffff;
 					}
 				}
 			}
+			tunnelObj.color = 0xffffff;
+			UpdateMap();
 		}
 		
 		private function canGoToFrom(x:int, y:int, dir:String):Boolean {
@@ -202,7 +297,6 @@ package worlds
 					return false;
 				}
 				else if (grid[x][y].type == "tunnel") {
-					/*TODO: checar se da pra passar*/
 					var t:Tunnel = grid[x][y] as Tunnel;
 					return t.CheckPassage(x, y, dir);
 				}
