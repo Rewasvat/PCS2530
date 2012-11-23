@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?xml version="1.0" encoding="utf-8" ?>
 <tunnel>
 	<blocks>
@@ -12,4 +13,130 @@
 			<piece type="0" posX="1" posY="2" />
 		</tunnel>
 	</tunnels>
+=======
+<?xml version="1.0" encoding="utf-8" ?>
+<tunnel>
+	<blocks>
+		<block index="0" up="1" down="1" left="0" right="0"/> <!-- 1 for True, 0 for False -->
+		<block index="1" up="0" down="1" left="0" right="1"/>
+		<block index="2" up="0" down="1" left="1" right="0"/>
+		<block index="3" up="0" down="0" left="1" right="1"/>
+		<block index="4" up="1" down="0" left="0" right="1"/>
+		<block index="5" up="1" down="0" left="1" right="0"/>
+	</blocks>
+	
+	<tunnels>
+		<tunnel width="3" height="3">
+			<piece type="0" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="0" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="0" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="5" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="0" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="4" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="1" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="0" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="1" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="5" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="1" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="4" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="2" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="0" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="2" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="5" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="2" posX="1" posY="0" />
+			<piece type="0" posX="1" posY="1" />
+			<piece type="4" posX="1" posY="2" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="3" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="3" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="1" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="3" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="4" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="3" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="3" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="2" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="1" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="2" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="4" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="2" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="3" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="5" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="1" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="5" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="3" height="3">
+			<piece type="4" posX="0" posY="1" />
+			<piece type="3" posX="1" posY="1" />
+			<piece type="5" posX="2" posY="1" />
+		</tunnel>
+		<tunnel width="2" height="2">
+			<piece type="3" posX="0" posY="0" />
+			<piece type="2" posX="0" posY="1" />
+			<piece type="0" posX="1" posY="1" />
+		</tunnel>
+		<tunnel width="2" height="2">
+			<piece type="0" posX="0" posY="0" />
+			<piece type="4" posX="1" posY="0" />
+			<piece type="3" posX="1" posY="1" />
+		</tunnel>
+		<tunnel width="2" height="2">
+			<piece type="0" posX="0" posY="1" />
+			<piece type="5" posX="1" posY="1" />
+			<piece type="3" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="2">
+			<piece type="3" posX="1" posY="0" />
+			<piece type="1" posX="0" posY="0" />
+			<piece type="0" posX="0" posY="1" />
+		</tunnel>
+		
+	</tunnels>
+>>>>>>> Novos assets de tunel pra testar
 </tunnel>
