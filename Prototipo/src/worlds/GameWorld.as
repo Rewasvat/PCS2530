@@ -72,7 +72,7 @@ package worlds
 			
 			removeFromGrid(entryPoint); /*this might need to be changed*/
 			UpdateMap();
-			fog.ClearFogIn(exitPoint.gridX, exitPoint.gridY, Constants.BORDER_SIZE);
+			fog.ClearFogIn(exitPoint.gridX, exitPoint.gridY, Constants.VISION_RANGE);
 		}
 		private function generateEntities():void {
 			var i:int;

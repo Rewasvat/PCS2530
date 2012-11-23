@@ -14,9 +14,9 @@ package utils
 		
 		public function Fog(parent:BaseGameObj) 
 		{
-			tiles = new Tilemap(FOG, 800, 600, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
+			tiles = new Tilemap(FOG, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
 			graphic = tiles;
-			tiles.setRect(0, 0, 25, 20,1);
+			tiles.setRect(0, 0, Constants.MAP_WIDTH, Constants.MAP_HEIGHT,1);
 			layer = 0;
 			this.parent = parent;
 		}
@@ -27,7 +27,7 @@ package utils
 			
 			if (parent) {
 				//tiles.setRect(0, 0, 25, 20, 1);
-				ClearFogIn(parent.gridX, parent.gridY, Constants.BORDER_SIZE);
+				ClearFogIn(parent.gridX, parent.gridY, Constants.VISION_RANGE);
 			}
 		}
 		
@@ -36,21 +36,16 @@ package utils
 			var fogY:int = centerY;
 			var fogH:int = 1;
 			for (var i:int = -radius; i <= radius; i++) {
-				fogX = centerX + i;
-				tiles.clearRect(fogX, fogY, 1, fogH );
-				if (i < 0) {
-					fogH += 2;
-					fogY -= 1;
-				}
-				else if (i >= 0) {
-					fogH -= 2;
-					fogY += 1;
+				for (var j:int = -radius; j <= radius; j++) {
+					fogX = centerX + i;
+					fogY = centerY + j;
+					if ( Math.abs(i) + Math.abs(j) <= radius) {
+						if (fogX >= 0 && fogY >= 0 && fogX < Constants.MAP_WIDTH && fogY < Constants.MAP_HEIGHT) {
+							tiles.clearTile(fogX, fogY);
+						}
+					}
 				}
 			}
-			
-			/******/
-			/*tiles.clearRect(centerX - Constants.BORDER_SIZE, centerY - Constants.BORDER_SIZE, 
-								Constants.BORDER_SIZE*2+1, Constants.BORDER_SIZE*2+1);*/
 		}
 	}
 }
