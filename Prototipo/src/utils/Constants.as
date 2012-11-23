@@ -17,6 +17,7 @@ package utils
 		
 		public static const BORDER_SIZE:int = 1;
 		public static const VISION_RANGE:int = 3;
+		public static const SPAWN_OFFSET:int = 3;
 		
 		public static const TUNNEL_RISK:Number = 2.0;
 		public static const ROCK_RISK:Number = 5.0;

@@ -57,9 +57,16 @@ package worlds
 				riskMatrix[i] = new Vector.<Number>(Constants.MAP_HEIGHT);
 			}
 			
-			entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, 8);
+			if (Math.random() > 0.5) {
+				entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT-2));
+				exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT-2));
+			}
+			else {
+				entryPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH-2), Constants.BORDER_SIZE);
+				exitPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH-2), Constants.MAP_HEIGHT - Constants.BORDER_SIZE);
+			}
+			
 			addToGrid(entryPoint);
-			exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, 8);
 			addToGrid(exitPoint);
 			
 			player = new Player(entryPoint.gridX, entryPoint.gridY);
@@ -73,6 +80,15 @@ package worlds
 			removeFromGrid(entryPoint); /*this might need to be changed*/
 			UpdateMap();
 			fog.ClearFogIn(exitPoint.gridX, exitPoint.gridY, Constants.VISION_RANGE);
+		}
+		private function randInt(start:int, end:int, useOffset:Boolean = true):int {
+			var a:int = start;
+			var b:int = end;
+			if (useOffset) {
+				a += Constants.SPAWN_OFFSET;
+				b -= Constants.SPAWN_OFFSET;
+			}
+			return a + int(Math.random() * (b - a));
 		}
 		private function generateEntities():void {
 			var i:int;
