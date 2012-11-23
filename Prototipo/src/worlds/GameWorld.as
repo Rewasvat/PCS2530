@@ -25,10 +25,14 @@ package worlds
 		private var exitPoint:BaseGameObj;
 		private var player:Player;
 		public var map:GameMap;
+		private var fog:Fog;
 		private var tunnelManager:TunnelManager;
 		private var placingTunnel:Boolean ;
 		private var tunnelIndex:int;
 		private var tunnelObj:Tunnel;
+		private var caveInCounter:Number;
+		private var caveInLimit:Number;
+		private var cavingIn:Boolean;
 		
 		public var grid:Vector.<Vector.<BaseGameObj>>;
 		private var riskMatrix:Vector.<Vector.<Number>>;
@@ -40,6 +44,9 @@ package worlds
 			placingTunnel = false;
 			tunnelIndex = 0;
 			tunnelObj = null;
+			caveInCounter = 0;
+			caveInLimit = 0;
+			cavingIn = false;
 			
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
@@ -56,14 +63,16 @@ package worlds
 			addToGrid(exitPoint);
 			
 			player = new Player(entryPoint.gridX, entryPoint.gridY);
-
+			fog = new Fog(player);
+			
 			add(map);
 			add(player);
 			generateEntities();
-			add(new Fog(player) );
-			UpdateMap();
+			add(fog);
 			
 			removeFromGrid(entryPoint); /*this might need to be changed*/
+			UpdateMap();
+			fog.ClearFogIn(exitPoint.gridX, exitPoint.gridY, Constants.BORDER_SIZE);
 		}
 		private function generateEntities():void {
 			var i:int;
@@ -113,23 +122,8 @@ package worlds
 				}
 				caveInCounter += FP.elapsed;
 			}
-			
-			if (Input.pressed(Key.D) && Input.mousePressed) {
-				var gx:int = int(Input.mouseX/Constants.TILE_WIDTH);
-				var gy:int = int(Input.mouseY / Constants.TILE_HEIGHT);
-				if (grid[gx][gy]) {
-					trace(grid[gx][gy].type);
-				}
-			}
 		}
 		
-		private function checkTunnelStatus():void {
-			
-		}
-		
-		private var caveInCounter:Number;
-		private var caveInLimit:Number;
-		private var cavingIn:Boolean;
 		public function UpdateMap():void {
 			if (player.IsNear(exitPoint)) {
 				trace("TUNNEL COMPLETED!");
