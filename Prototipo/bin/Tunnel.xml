@@ -7,6 +7,18 @@
 		<block index="3" up="0" down="0" left="1" right="1"/>
 		<block index="4" up="1" down="0" left="0" right="1"/>
 		<block index="5" up="1" down="0" left="1" right="0"/>
+		<block index="6" up="1" down="1" left="0" right="0"/> <!-- Tuneis com entrada marcada -->
+		<block index="7" up="0" down="1" left="0" right="1"/>
+		<block index="8" up="0" down="1" left="1" right="0"/>
+		<block index="9" up="0" down="0" left="1" right="1"/>
+		<block index="10" up="1" down="0" left="0" right="1"/>
+		<block index="11" up="1" down="0" left="1" right="0"/>
+		<block index="12" up="1" down="1" left="0" right="0"/> <!-- Tuneis com saida marcada -->
+		<block index="13" up="0" down="1" left="0" right="1"/>
+		<block index="14" up="0" down="1" left="1" right="0"/>
+		<block index="15" up="0" down="0" left="1" right="1"/>
+		<block index="16" up="1" down="0" left="0" right="1"/>
+		<block index="17" up="1" down="0" left="1" right="0"/>
 	</blocks>
 	
 	<tunnels>
