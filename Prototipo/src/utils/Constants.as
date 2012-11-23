@@ -23,8 +23,7 @@ package utils
 		public static const SAND_RISK:Number = 15.0;
 		public static const NONE_RISK:Number = 20.0;
 		
-		public static const RISK_THRESHOLD:Number = 200.0; /*Calculated so you can move 6 tiles in a straight line
-															 with only dirt around*/
+		public static const RISK_THRESHOLD:Number = 200.0;
 		public static const DEFAULT_CAVEIN_LIMIT:Number = 10.0;
 	}
 

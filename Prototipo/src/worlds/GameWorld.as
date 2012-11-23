@@ -62,6 +62,8 @@ package worlds
 			generateEntities();
 			add(new Fog(player) );
 			UpdateMap();
+			
+			removeFromGrid(entryPoint); /*this might need to be changed*/
 		}
 		private function generateEntities():void {
 			var i:int;
@@ -110,6 +112,14 @@ package worlds
 					cavingIn = false;
 				}
 				caveInCounter += FP.elapsed;
+			}
+			
+			if (Input.pressed(Key.D) && Input.mousePressed) {
+				var gx:int = int(Input.mouseX/Constants.TILE_WIDTH);
+				var gy:int = int(Input.mouseY / Constants.TILE_HEIGHT);
+				if (grid[gx][gy]) {
+					trace(grid[gx][gy].type);
+				}
 			}
 		}
 		
