@@ -5,6 +5,7 @@ package entities
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.FP;
 	import utils.Constants;
+	import utils.GameMap;
 	import worlds.GameWorld;
 	
 	/**
@@ -36,7 +37,10 @@ package entities
 			gridY = int(Input.mouseY / Constants.TILE_HEIGHT) - 1;
 			
 			var w:GameWorld = world as GameWorld;
-			if (w.canGoTo(gridX+1, gridY+1)) {
+			if (w.map.getTile(gridX + 1, gridY + 1) == GameMap.NONE || w.isTunnelIn(gridX+1, gridY+1) ) {
+				color = 0x0000ff;
+			}
+			else if (w.canGoTo(gridX+1, gridY+1)) {
 				color = 0x00ff00;
 			}
 			else {

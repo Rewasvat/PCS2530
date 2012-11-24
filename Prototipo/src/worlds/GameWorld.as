@@ -34,6 +34,7 @@ package worlds
 		private var caveInCounter:Number;
 		private var caveInLimit:Number;
 		private var cavingIn:Boolean;
+		private var totalRisk:Number;
 		
 		public var grid:Vector.<Vector.<BaseGameObj>>;
 		private var riskMatrix:Vector.<Vector.<Number>>;
@@ -48,6 +49,7 @@ package worlds
 			caveInCounter = 0;
 			caveInLimit = 0;
 			cavingIn = false;
+			totalRisk = 0;
 			Mouse.hide();
 			
 			map = new GameMap;
@@ -151,15 +153,16 @@ package worlds
 		}
 		
 		public function UpdateMap():void {
-			if (player.IsNear(exitPoint)) {
-				trace("TUNNEL COMPLETED!");
-			}
 			if (map.getTile(player.gridX, player.gridY) == GameMap.GOLD) {
 				player.gold_amount += 1;
 			}
 			map.PlayerMovedTo(player.gridX, player.gridY);
 			
-			var totalRisk:Number = 0;
+			if (checkTunnelPath()) {//(player.IsNear(exitPoint)) {
+				trace("TUNNEL COMPLETED!");
+			}
+			
+			totalRisk = 0;
 			var risk:Number;
 			var i:int, j:int;
 			for (i = 0; i < Constants.MAP_WIDTH; i++) {
@@ -225,25 +228,59 @@ package worlds
 
 		private function checkTunnelPath():Boolean {
 			var queue:Vector.<BaseGameObj> = new Vector.<BaseGameObj>;
+			var pathMatrix:Vector.<Vector.<BaseGameObj>> = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
+			var i:int;
+			for (i=0; i < Constants.MAP_WIDTH; i++) {
+				pathMatrix[i] = new Vector.<BaseGameObj>(Constants.MAP_HEIGHT);
+			}
 			
+			/* Place first coord in the queue */
 			queue.push( BaseGameObj.CreateDummy(entryPoint.gridX, entryPoint.gridY) );
 			var obj:BaseGameObj;
 			while (queue.length > 0) {
+				/* grab coord from queue */
 				obj = queue.shift();
+				/* check if we already passed in it */
+				if (pathMatrix[obj.gridX][obj.gridY] != null) {
+					continue;
+				}
+				pathMatrix[obj.gridX][obj.gridY] = obj;
 				
-				if (CTPaux(obj.gridX - 1, obj.gridY, "left") {
+				/* check if we reached destination */
+				if (obj.IsNear(exitPoint)) {
+					return true;
+				}
+				
+				/* if this coord is a tunnel, check if we can go to adjacent tiles */
+				var left:Boolean = true;
+				var right:Boolean = true;
+				var up:Boolean = true;
+				var down:Boolean = true;
+				if (isTunnelIn(obj.gridX, obj.gridY)) {
+					var t:Tunnel = grid[obj.gridX][obj.gridY] as Tunnel;
+					var tb:TunnelBlock = t.GetBlockInTile(obj.gridX, obj.gridY);
+					left = tb.left;
+					right = tb.right;
+					up = tb.up;
+					down = tb.down;
+				}
+				
+				/* check and place adjacent coords in the queue */
+				if (CTPaux(obj.gridX - 1, obj.gridY, "right") && left) {
 					queue.push( BaseGameObj.CreateDummy(obj.gridX - 1, obj.gridY) );
 				}
-				if (CTPaux(obj.gridX + 1, obj.gridY, "right") {
+				if (CTPaux(obj.gridX + 1, obj.gridY, "left") && right) {
 					queue.push( BaseGameObj.CreateDummy(obj.gridX + 1, obj.gridY) );
 				}
-				if (CTPaux(obj.gridX, obj.gridY - 1, "up") {
+				if (CTPaux(obj.gridX, obj.gridY - 1, "down") && up) {
 					queue.push( BaseGameObj.CreateDummy(obj.gridX, obj.gridY - 1) );
 				}
-				if (CTPaux(obj.gridX, obj.gridY + 1, "down") {
+				if (CTPaux(obj.gridX, obj.gridY + 1, "up") && down) {
 					queue.push( BaseGameObj.CreateDummy(obj.gridX, obj.gridY + 1) );
 				}
 			}
+			/* search is over and no path to exit was found */
+			return false;
 		}
 		private function CTPaux(x:int, y:int, dir:String):Boolean {
 			if (map.getTile(x, y) == GameMap.NONE) {
@@ -258,6 +295,7 @@ package worlds
 					return true;
 				}
 			}
+			return false;
 		}
 		
 		public function UpdateTunnelCreation():void {
@@ -394,6 +432,16 @@ package worlds
 				 (map.getTile(x, y - 1) == GameMap.NONE) && canGoToFrom(x, y - 1, "down") ||
 				 (map.getTile(x, y + 1) == GameMap.NONE) && canGoToFrom(x, y + 1, "up") )
 			{
+				return true;
+			}
+			return false;
+		}
+		
+		public function isTunnelIn(gx:int, gy:int):Boolean {
+			if (gx < 0 || gx >= Constants.MAP_WIDTH || gy < 0 || gy >= Constants.MAP_HEIGHT) {
+				return false;
+			}
+			if (grid[gx][gy] != null && grid[gx][gy].type == "tunnel") {
 				return true;
 			}
 			return false;

@@ -18,7 +18,6 @@ package entities
 	public class Player extends BaseGameObj 
 	{
 		private var tiles: Tilemap;
-		[Embed(source = '../assets/mulher0.png')] private const PLAYER:Class;
 		
 		private var last_stable_x:int;
 		private var last_stable_y:int;
@@ -33,9 +32,6 @@ package entities
 		
 		public function Player(gridX:int, gridY:int) 
 		{
-			//tiles = new Tilemap(PLAYER, 32, 32, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
-			//graphic = tiles;
-			//tiles.setTile(0, 0, 0);
 			setHitbox(Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
 			this.gridX = gridX;
 			this.gridY = gridY;
