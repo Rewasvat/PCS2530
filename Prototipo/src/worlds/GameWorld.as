@@ -63,12 +63,14 @@ package worlds
 				entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
 				map.setTile(entryPoint.gridX-1, entryPoint.gridY, GameMap.POINT_HORIZONTAL);
 				exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
+				exitPoint.type = "exit";
 				map.setTile(exitPoint.gridX, exitPoint.gridY, GameMap.POINT_HORIZONTAL);
 			}
 			else {
 				entryPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), Constants.BORDER_SIZE);
 				map.setTile(entryPoint.gridX, entryPoint.gridY-1, GameMap.POINT_VERTICAL);
 				exitPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), Constants.MAP_HEIGHT - Constants.BORDER_SIZE);
+				exitPoint.type = "exit";
 				map.setTile(exitPoint.gridX, exitPoint.gridY, GameMap.POINT_VERTICAL);
 			}
 			
@@ -126,20 +128,6 @@ package worlds
 				}
 			}
 		}
-		/*private function setGridPosForObj(obj:BaseGameObj):void {
-			var x:int, y:int;
-			while (true) {
-				x = FP.rand(Constants.MAP_WIDTH - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
-				y = FP.rand(Constants.MAP_HEIGHT - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
-				
-				if (!grid[x][y]) {
-					grid[x][y] = obj;
-					obj.gridX = x;
-					obj.gridY = y;
-					break;
-				}
-			}
-		}*/
 		public function addToGrid(obj:BaseGameObj):void {
 			grid[obj.gridX][obj.gridY] = obj;
 		}
@@ -235,6 +223,42 @@ package worlds
 			return risk;
 		}
 
+		private function checkTunnelPath():Boolean {
+			var queue:Vector.<BaseGameObj> = new Vector.<BaseGameObj>;
+			
+			queue.push( BaseGameObj.CreateDummy(entryPoint.gridX, entryPoint.gridY) );
+			var obj:BaseGameObj;
+			while (queue.length > 0) {
+				obj = queue.shift();
+				
+				if (CTPaux(obj.gridX - 1, obj.gridY, "left") {
+					queue.push( BaseGameObj.CreateDummy(obj.gridX - 1, obj.gridY) );
+				}
+				if (CTPaux(obj.gridX + 1, obj.gridY, "right") {
+					queue.push( BaseGameObj.CreateDummy(obj.gridX + 1, obj.gridY) );
+				}
+				if (CTPaux(obj.gridX, obj.gridY - 1, "up") {
+					queue.push( BaseGameObj.CreateDummy(obj.gridX, obj.gridY - 1) );
+				}
+				if (CTPaux(obj.gridX, obj.gridY + 1, "down") {
+					queue.push( BaseGameObj.CreateDummy(obj.gridX, obj.gridY + 1) );
+				}
+			}
+		}
+		private function CTPaux(x:int, y:int, dir:String):Boolean {
+			if (map.getTile(x, y) == GameMap.NONE) {
+				if (grid[x][y] != null && grid[x][y].type == "tunnel") {
+					var t:Tunnel = grid[x][y] as Tunnel;
+					return t.CheckPassage(x, y, dir);
+				}
+				else if (grid[x][y] != null && grid[x][y].type == "exit") {
+					return true
+				}
+				else {
+					return true;
+				}
+			}
+		}
 		
 		public function UpdateTunnelCreation():void {
 			if (!placingTunnel) {
@@ -353,6 +377,8 @@ package worlds
 			return true;
 		}
 		public function canGoTo(x:int, y:int):Boolean {
+			
+			
 			if (map.getTile(x, y) == GameMap.NONE) {
 				/*Target tile is already opened, does not matter if player can go or not*/
 			}
