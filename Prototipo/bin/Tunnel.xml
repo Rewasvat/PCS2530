@@ -22,6 +22,9 @@
 	</blocks>
 	
 	<tunnels>
+	
+	<!-- Tuneis verticais -->
+	
 		<tunnel width="3" height="3">
 			<piece type="6" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
@@ -38,49 +41,52 @@
 			<piece type="10" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="13" posX="1" posY="0" />
+			<piece type="1" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="12" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="13" posX="1" posY="0" />
+			<piece type="1" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="17" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="13" posX="1" posY="0" />
+			<piece type="1" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="10" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="8" posX="1" posY="0" />
+			<piece type="2" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="12" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="8" posX="1" posY="0" />
+			<piece type="2" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="17" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="8" posX="1" posY="0" />
+			<piece type="2" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="10" posX="1" posY="2" />
 		</tunnel>
+		
+		<!-- Tuneis horizontais -->
+		
 		<tunnel width="3" height="3">
 			<piece type="3" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="12" posX="2" posY="1" />
+			<piece type="3" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
 			<piece type="1" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="17" posX="2" posY="1" />
+			<piece type="3" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
 			<piece type="4" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="10" posX="2" posY="1" />
+			<piece type="3" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
 			<piece type="3" posX="0" posY="1" />
@@ -112,6 +118,9 @@
 			<piece type="3" posX="1" posY="1" />
 			<piece type="5" posX="2" posY="1" />
 		</tunnel>
+		
+		<!-- cotovelos -->
+		
 		<tunnel width="2" height="2">
 			<piece type="3" posX="0" posY="0" />
 			<piece type="2" posX="1" posY="0" />
