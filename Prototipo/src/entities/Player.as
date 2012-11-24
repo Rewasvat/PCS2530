@@ -24,7 +24,7 @@ package entities
 		private var last_stable_y:int;
 		
 		public var canMove:Boolean;
-		private var gold_amount:int;
+		public var gold_amount:int;
 		
 		private static const DOWN:int = 0;
 		private static const LEFT:int = 1;
@@ -64,12 +64,6 @@ package entities
 		
 		public function CheckForCollisions():Boolean 
 		{
-			var gold:Gold = collide("gold", x, y) as Gold;
-			if (gold) {
-				gold.destroy();
-				gold_amount++;
-			}
-			
 			return false;
 		}
 		

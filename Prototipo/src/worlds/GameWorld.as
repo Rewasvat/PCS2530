@@ -5,10 +5,10 @@ package worlds
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
 	import net.flashpunk.FP;
+	import flash.ui.Mouse;
 	import entities.BaseGameObj;
-	import entities.Gold;
 	import entities.Player;
-	import entities.Rock;
+	import entities.Cursor;
 	import utils.Fog;
 	import utils.GameMap;
 	import utils.Constants;
@@ -26,6 +26,7 @@ package worlds
 		private var player:Player;
 		public var map:GameMap;
 		private var fog:Fog;
+		private var cursor:Cursor;
 		private var tunnelManager:TunnelManager;
 		private var placingTunnel:Boolean ;
 		private var tunnelIndex:int;
@@ -47,6 +48,7 @@ package worlds
 			caveInCounter = 0;
 			caveInLimit = 0;
 			cavingIn = false;
+			Mouse.hide();
 			
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
@@ -58,12 +60,16 @@ package worlds
 			}
 			
 			if (Math.random() > 0.5) {
-				entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT-2));
-				exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT-2));
+				entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
+				map.setTile(entryPoint.gridX-1, entryPoint.gridY, GameMap.POINT_HORIZONTAL);
+				exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
+				map.setTile(exitPoint.gridX, exitPoint.gridY, GameMap.POINT_HORIZONTAL);
 			}
 			else {
-				entryPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH-2), Constants.BORDER_SIZE);
-				exitPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH-2), Constants.MAP_HEIGHT - Constants.BORDER_SIZE);
+				entryPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), Constants.BORDER_SIZE);
+				map.setTile(entryPoint.gridX, entryPoint.gridY-1, GameMap.POINT_VERTICAL);
+				exitPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), Constants.MAP_HEIGHT - Constants.BORDER_SIZE);
+				map.setTile(exitPoint.gridX, exitPoint.gridY, GameMap.POINT_VERTICAL);
 			}
 			
 			addToGrid(entryPoint);
@@ -71,11 +77,14 @@ package worlds
 			
 			player = new Player(entryPoint.gridX, entryPoint.gridY);
 			fog = new Fog(player);
+			cursor = new Cursor;
+			
 			
 			add(map);
 			add(player);
 			generateEntities();
 			add(fog);
+			add(cursor);
 			
 			removeFromGrid(entryPoint); /*this might need to be changed*/
 			UpdateMap();
@@ -93,17 +102,31 @@ package worlds
 		private function generateEntities():void {
 			var i:int;
 			for (i = 0; i < 10;i++) {
-				var rock:Rock = new Rock();
-				setGridPosForObj(rock);
-				add(rock);
+				//var rock:Rock = new Rock();
+				setGridPosForObj(GameMap.ROCK);
+				//add(rock);
+				//map.setTile(rock.gridX, rock.gridY, GameMap.ROCK);
 			}
 			for (i = 0; i < 15;i++) {
-				var gold:Gold = new Gold();
-				setGridPosForObj(gold);
-				add(gold);
+				//var gold:Gold = new Gold();
+				setGridPosForObj(GameMap.GOLD);
+				//add(gold);
+				//map.setTile(gold.gridX, gold.gridY, GameMap.GOLD);
 			}
 		}
-		private function setGridPosForObj(obj:BaseGameObj):void {
+		private function setGridPosForObj(type:int):void {
+			var x:int, y:int;
+			while (true) {
+				x = FP.rand(Constants.MAP_WIDTH - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
+				y = FP.rand(Constants.MAP_HEIGHT - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
+				
+				if (map.getTile(x, y) == GameMap.DIRT) {
+					map.setTile(x, y, type);
+					break;
+				}
+			}
+		}
+		/*private function setGridPosForObj(obj:BaseGameObj):void {
 			var x:int, y:int;
 			while (true) {
 				x = FP.rand(Constants.MAP_WIDTH - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
@@ -116,7 +139,7 @@ package worlds
 					break;
 				}
 			}
-		}
+		}*/
 		public function addToGrid(obj:BaseGameObj):void {
 			grid[obj.gridX][obj.gridY] = obj;
 		}
@@ -124,8 +147,7 @@ package worlds
 			grid[obj.gridX][obj.gridY] = null;
 		}
 		
-		override public function update():void 
-		{
+		override public function update():void {
 			super.update();
 			//UpdateMap();
 			UpdateTunnelCreation();
@@ -143,6 +165,9 @@ package worlds
 		public function UpdateMap():void {
 			if (player.IsNear(exitPoint)) {
 				trace("TUNNEL COMPLETED!");
+			}
+			if (map.getTile(player.gridX, player.gridY) == GameMap.GOLD) {
+				player.gold_amount += 1;
 			}
 			map.PlayerMovedTo(player.gridX, player.gridY);
 			
@@ -189,14 +214,17 @@ package worlds
 						if (grid[x][y] && grid[x][y].type == "tunnel") {
 							risk += Constants.TUNNEL_RISK;
 						}
-						else if (grid[x][y] && grid[x][y].type == "rock") {
+						else if (map.getTile(x, y) == GameMap.ROCK) {//grid[x][y] && grid[x][y].type == "rock") {
 							risk += Constants.ROCK_RISK;
 						}
 						else if (map.getTile(x, y) == GameMap.DIRT) {
 							risk += Constants.DIRT_RISK;
 						}
-						else if (map.getTile(x, y) == GameMap.SAND) {
-							risk += Constants.SAND_RISK;
+						else if (map.getTile(x, y) == GameMap.GOLD) {
+							risk += Constants.GOLD_RISK;
+						}
+						else if (map.getTile(x, y) == GameMap.BORDER) {
+							risk += Constants.BORDER_RISK;
 						}
 						else if (map.getTile(x, y) == GameMap.NONE) {
 							risk += Constants.NONE_RISK;
@@ -312,11 +340,12 @@ package worlds
 		}
 		
 		private function canGoToFrom(x:int, y:int, dir:String):Boolean {
+			if (map.getTile(x, y) == GameMap.ROCK ||
+				map.getTile(x, y) == GameMap.BORDER ) {
+				return false;
+			}
 			if (grid[x][y]) {
-				if ( grid[x][y].type == "rock") {
-					return false;
-				}
-				else if (grid[x][y].type == "tunnel") {
+				if (grid[x][y].type == "tunnel") {
 					var t:Tunnel = grid[x][y] as Tunnel;
 					return t.CheckPassage(x, y, dir);
 				}
@@ -327,10 +356,11 @@ package worlds
 			if (map.getTile(x, y) == GameMap.NONE) {
 				/*Target tile is already opened, does not matter if player can go or not*/
 			}
-			if (grid[x][y]) {
-				if ( grid[x][y].type == "rock") {
-					return false;
-				}
+			if (map.getTile(x, y) == GameMap.ROCK ||
+				map.getTile(x, y) == GameMap.BORDER ||
+				map.getTile(x, y) == GameMap.POINT_HORIZONTAL ||
+				map.getTile(x, y) == GameMap.POINT_VERTICAL ) {
+				return false;
 			}
 			
 			if ( (map.getTile(x - 1, y) == GameMap.NONE) && canGoToFrom(x - 1, y, "right") ||

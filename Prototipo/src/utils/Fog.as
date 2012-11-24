@@ -16,7 +16,7 @@ package utils
 		{
 			tiles = new Tilemap(FOG, Constants.GAME_WIDTH, Constants.GAME_HEIGHT, Constants.TILE_WIDTH, Constants.TILE_HEIGHT);
 			graphic = tiles;
-			tiles.setRect(0, 0, Constants.MAP_WIDTH, Constants.MAP_HEIGHT,1);
+			tiles.setRect(0, 0, Constants.MAP_WIDTH, Constants.MAP_HEIGHT, 0);
 			layer = 0;
 			this.parent = parent;
 		}

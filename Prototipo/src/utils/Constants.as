@@ -20,9 +20,10 @@ package utils
 		public static const SPAWN_OFFSET:int = 3;
 		
 		public static const TUNNEL_RISK:Number = 2.0;
+		public static const BORDER_RISK:Number = 2.0;
 		public static const ROCK_RISK:Number = 5.0;
+		public static const GOLD_RISK:Number = 7.0;
 		public static const DIRT_RISK:Number = 10.0;
-		public static const SAND_RISK:Number = 15.0;
 		public static const NONE_RISK:Number = 20.0;
 		
 		public static const RISK_THRESHOLD:Number = 200.0;
