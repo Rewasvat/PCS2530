@@ -55,7 +55,7 @@ package worlds
 			cavingIn = false;
 			totalRisk = 0;
 			Mouse.hide();
-
+			
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
 			riskMatrix = new Vector.<Vector.<Number>>(Constants.MAP_WIDTH);
@@ -165,7 +165,13 @@ package worlds
 					hud.SetEndText("FAILED");
 					cavingIn = false;
 				}
+				camera.x = randInt( -Constants.CAVEIN_SHAKE_SIZE, Constants.CAVEIN_SHAKE_SIZE, false);
+				camera.y = randInt( -Constants.CAVEIN_SHAKE_SIZE, Constants.CAVEIN_SHAKE_SIZE, false);
 				caveInCounter += FP.elapsed;
+			}
+			else {
+				camera.x = 0;
+				camera.y = 0;
 			}
 		}
 		

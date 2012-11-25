@@ -28,6 +28,7 @@ package utils
 		
 		public static const RISK_THRESHOLD:Number = 200.0;
 		public static const DEFAULT_CAVEIN_LIMIT:Number = 10.0;
+		public static const CAVEIN_SHAKE_SIZE:int = 2;
 	}
 
 }
