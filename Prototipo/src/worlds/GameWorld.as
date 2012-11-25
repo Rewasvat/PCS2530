@@ -24,6 +24,7 @@ package worlds
 	 */
 	public class GameWorld extends World 
 	{
+		private var finished:Boolean;
 		private var entryPoint:BaseGameObj;
 		private var exitPoint:BaseGameObj;
 		public var player:Player;
@@ -46,6 +47,7 @@ package worlds
 		
 		public function GameWorld() 
 		{
+			finished = false;
 			tunnelManager = new TunnelManager();
 			placingTunnel = false;
 			tunnelIndex = 0;
@@ -127,6 +129,7 @@ package worlds
 		}
 		private function setGridPosForObj(type:int):void {
 			var x:int, y:int;
+			var c:uint;
 			while (true) {
 				x = FP.rand(Constants.MAP_WIDTH - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
 				y = FP.rand(Constants.MAP_HEIGHT - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
@@ -144,6 +147,11 @@ package worlds
 					map.setTile(x, y, type);
 					break;
 				}
+				else if (c > 100000 && map.getTile(x, y) == GameMap.DIRT) {
+					map.setTile(x, y, type);
+					break;
+				}
+				c++;
 			}
 		}
 		public function addToGrid(obj:BaseGameObj):void {
@@ -153,16 +161,27 @@ package worlds
 			grid[obj.gridX][obj.gridY] = null;
 		}
 		
-		override public function update():void {
+		override public function update():void {			
 			super.update();
 			//UpdateMap();
 			UpdateTunnelCreation();
 			player.canMove = !placingTunnel;
+
+			if (finished) { 
+				if (Input.mousePressed) {
+					var newWorld:GameWorld = new GameWorld;
+					FP.world = newWorld;
+					this.removeAll();
+					delete this;
+				}
+				return;
+			}
 			
 			if (cavingIn) {
 				if (caveInCounter > caveInLimit) {
 					trace("FAILED");
 					hud.SetEndText("FAILED");
+					finished = true;
 					cavingIn = false;
 				}
 				camera.x = randInt( -Constants.CAVEIN_SHAKE_SIZE, Constants.CAVEIN_SHAKE_SIZE, false);
@@ -176,6 +195,7 @@ package worlds
 		}
 		
 		public function UpdateMap():void {
+			if (finished) { return; }
 			if (map.getTile(player.gridX, player.gridY) == GameMap.GOLD) {
 				player.gold_amount += 1;
 			}
@@ -184,6 +204,9 @@ package worlds
 			if (checkTunnelPath()) {//(player.IsNear(exitPoint)) {
 				trace("TUNNEL COMPLETED!");
 				hud.SetEndText("COMPLETED!");
+				finished = true;
+				Input.mousePressed = false;
+				return;
 			}
 			
 			totalRisk = 0;
@@ -259,6 +282,7 @@ package worlds
 		
 		
 		private function checkTunnelPath():Boolean {
+			if (Input.pressed(Key.DELETE)) { return true; }
 			var queue:Vector.<BaseGameObj> = new Vector.<BaseGameObj>;
 			var pathMatrix:Vector.<Vector.<BaseGameObj>> = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
 			var i:int;
@@ -315,6 +339,7 @@ package worlds
 			return false;
 		}
 		private function CTPaux(x:int, y:int, dir:String):Boolean {
+			if (x < 0 || y < 0) { return false; }
 			if (map.getTile(x, y) == GameMap.NONE) {
 				if (grid[x][y] != null && grid[x][y].type == "tunnel") {
 					var t:Tunnel = grid[x][y] as Tunnel;
@@ -331,6 +356,7 @@ package worlds
 		}
 		
 		public function UpdateTunnelCreation():void {
+			if (finished) { return; }
 			if (!placingTunnel) {
 				if (Input.pressed(Key.T)) {
 					placingTunnel = true;
