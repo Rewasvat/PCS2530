@@ -3,6 +3,7 @@ package utils
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import net.flashpunk.FP;
 	import entities.Tunnel;
 	
 	/**
@@ -12,12 +13,19 @@ package utils
 	public class TunnelManager 
 	{
 		public var tunnels:Vector.<Tunnel>;
+		private var allTunnels:Vector.<Tunnel>;
 		private var blocks:Vector.<TunnelBlock>;
+		
+		public var maxTunnelWidth:int;
+		public var maxTunnelHeight:int;
 		
 		public function TunnelManager() 
 		{
 			tunnels = new Vector.<Tunnel>;
+			allTunnels = new Vector.<Tunnel>;
 			blocks = new Vector.<TunnelBlock>;
+			maxTunnelWidth = 0;
+			maxTunnelHeight = 0;
 			LoadTunnels();
 		}
 		
@@ -48,8 +56,22 @@ package utils
 									parseInt(data.tunnels.tunnel[i].piece[j].@posY),
 									parseInt(data.tunnels.tunnel[i].piece[j].@type));
 				}
-				tunnels.push(t);
+				if (t.tunnelWidth > maxTunnelWidth) { maxTunnelWidth = t.tunnelWidth; }
+				if (t.tunnelHeight > maxTunnelHeight) { maxTunnelHeight = t.tunnelHeight; }
+				allTunnels.push(t);
 			}
+			
+			tunnels.push( randTunnel() );
+			tunnels.push( randTunnel() );
+			tunnels.push( randTunnel() );
+		}
+		private function randTunnel():Tunnel {
+			var a:int = 0;
+			var b:int = allTunnels.length - 1;
+			return allTunnels[a + int(Math.random() * (b - a))].Clone();
+		}
+		public function UpdateTunnelList(index:int):void {
+			tunnels[index] = randTunnel();
 		}
 		
 		public function GetBlock(type:int):TunnelBlock {

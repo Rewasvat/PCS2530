@@ -32,9 +32,9 @@ package worlds
 		private var fog:Fog;
 		private var cursor:Cursor;
 		private var hud:HUD;
-		private var tunnelManager:TunnelManager;
+		public var tunnelManager:TunnelManager;
 		private var placingTunnel:Boolean ;
-		private var tunnelIndex:int;
+		public var tunnelIndex:int;
 		private var tunnelObj:Tunnel;
 		private var caveInCounter:Number;
 		private var caveInLimit:Number;
@@ -358,7 +358,7 @@ package worlds
 		public function UpdateTunnelCreation():void {
 			if (finished) { return; }
 			if (!placingTunnel) {
-				if (Input.pressed(Key.T)) {
+				if (Input.pressed(Key.SPACE)) {
 					placingTunnel = true;
 					resetTunnelObj();
 				}
@@ -373,10 +373,10 @@ package worlds
 						trace("tunnel created!");
 						addTunnel();
 						tunnelObj = null;
-						placingTunnel = false;
+						resetTunnelObj();
 					}
 				}
-				else if (Input.pressed(Key.T)) {
+				else if (Input.pressed(Key.SPACE)) {
 					placingTunnel = false;
 					remove(tunnelObj);
 					tunnelObj = null;
@@ -461,6 +461,8 @@ package worlds
 			}
 			tunnelObj.color = 0xffffff;
 			UpdateMap();
+			
+			tunnelManager.UpdateTunnelList(tunnelIndex);
 		}
 		
 		private function canGoToFrom(x:int, y:int, dir:String):Boolean {
