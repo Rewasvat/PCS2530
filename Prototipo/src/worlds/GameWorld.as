@@ -1,6 +1,9 @@
 package worlds
 {
+	import entities.HUD;
 	import entities.Tunnel;
+	import net.flashpunk.Graphic;
+	import net.flashpunk.graphics.Text;
 	import net.flashpunk.World;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
@@ -23,10 +26,11 @@ package worlds
 	{
 		private var entryPoint:BaseGameObj;
 		private var exitPoint:BaseGameObj;
-		private var player:Player;
+		public var player:Player;
 		public var map:GameMap;
 		private var fog:Fog;
 		private var cursor:Cursor;
+		private var hud:HUD;
 		private var tunnelManager:TunnelManager;
 		private var placingTunnel:Boolean ;
 		private var tunnelIndex:int;
@@ -47,11 +51,11 @@ package worlds
 			tunnelIndex = 0;
 			tunnelObj = null;
 			caveInCounter = 0;
-			caveInLimit = 0;
+			caveInLimit = 1;
 			cavingIn = false;
 			totalRisk = 0;
 			Mouse.hide();
-			
+
 			map = new GameMap;
 			grid = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
 			riskMatrix = new Vector.<Vector.<Number>>(Constants.MAP_WIDTH);
@@ -62,15 +66,17 @@ package worlds
 			}
 			
 			if (Math.random() > 0.5) {
-				entryPoint = BaseGameObj.CreateDummy(Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
-				map.setTile(entryPoint.gridX-1, entryPoint.gridY, GameMap.POINT_HORIZONTAL);
+				entryPoint = BaseGameObj.CreateDummy(0, randInt(1, Constants.MAP_HEIGHT - 2));
+				map.setTile(entryPoint.gridX, entryPoint.gridY, GameMap.POINT_HORIZONTAL);
+				map.setTile(entryPoint.gridX+1, entryPoint.gridY, GameMap.NONE);
 				exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
 				exitPoint.type = "exit";
 				map.setTile(exitPoint.gridX, exitPoint.gridY, GameMap.POINT_HORIZONTAL);
 			}
 			else {
-				entryPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), Constants.BORDER_SIZE);
-				map.setTile(entryPoint.gridX, entryPoint.gridY-1, GameMap.POINT_VERTICAL);
+				entryPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), 0);
+				map.setTile(entryPoint.gridX, entryPoint.gridY, GameMap.POINT_VERTICAL);
+				map.setTile(entryPoint.gridX, entryPoint.gridY+1, GameMap.NONE);
 				exitPoint = BaseGameObj.CreateDummy(randInt(1, Constants.MAP_WIDTH - 2), Constants.MAP_HEIGHT - Constants.BORDER_SIZE);
 				exitPoint.type = "exit";
 				map.setTile(exitPoint.gridX, exitPoint.gridY, GameMap.POINT_VERTICAL);
@@ -82,13 +88,14 @@ package worlds
 			player = new Player(entryPoint.gridX, entryPoint.gridY);
 			fog = new Fog(player);
 			cursor = new Cursor;
-			
+			hud = new HUD();
 			
 			add(map);
 			add(player);
 			generateEntities();
 			add(fog);
 			add(cursor);
+			add(hud);
 			
 			removeFromGrid(entryPoint); /*this might need to be changed*/
 			UpdateMap();
@@ -105,7 +112,7 @@ package worlds
 		}
 		private function generateEntities():void {
 			var i:int;
-			for (i = 0; i < 10;i++) {
+			for (i = 0; i < 20;i++) {
 				//var rock:Rock = new Rock();
 				setGridPosForObj(GameMap.ROCK);
 				//add(rock);
@@ -124,7 +131,16 @@ package worlds
 				x = FP.rand(Constants.MAP_WIDTH - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
 				y = FP.rand(Constants.MAP_HEIGHT - Constants.BORDER_SIZE*2) + Constants.BORDER_SIZE;
 				
-				if (map.getTile(x, y) == GameMap.DIRT) {
+				if (map.getTile(x-1, y-1) == GameMap.DIRT && 
+					map.getTile(x-1, y) == GameMap.DIRT &&
+					map.getTile(x-1, y+1) == GameMap.DIRT &&
+					map.getTile(x, y-1) == GameMap.DIRT &&
+					map.getTile(x, y) == GameMap.DIRT &&
+					map.getTile(x, y+1) == GameMap.DIRT &&
+					map.getTile(x+1, y-1) == GameMap.DIRT &&
+					map.getTile(x+1, y) == GameMap.DIRT &&
+					map.getTile(x+1, y+1) == GameMap.DIRT) {
+						
 					map.setTile(x, y, type);
 					break;
 				}
@@ -146,6 +162,7 @@ package worlds
 			if (cavingIn) {
 				if (caveInCounter > caveInLimit) {
 					trace("FAILED");
+					hud.SetEndText("FAILED");
 					cavingIn = false;
 				}
 				caveInCounter += FP.elapsed;
@@ -160,6 +177,7 @@ package worlds
 			
 			if (checkTunnelPath()) {//(player.IsNear(exitPoint)) {
 				trace("TUNNEL COMPLETED!");
+				hud.SetEndText("COMPLETED!");
 			}
 			
 			totalRisk = 0;
@@ -182,6 +200,7 @@ package worlds
 			}
 			else if (cavingIn && totalRisk < Constants.RISK_THRESHOLD) {
 				cavingIn = false;
+				caveInCounter = 0;
 				trace("NO LONGER IN RISK");
 			}
 			else if (cavingIn) {
@@ -225,7 +244,14 @@ package worlds
 			}
 			return risk;
 		}
-
+		public function getRiskPercentage():Number {
+			return totalRisk / Constants.RISK_THRESHOLD;
+		}
+		public function getCaveInPercentage():Number {
+			return caveInCounter / caveInLimit;
+		}
+		
+		
 		private function checkTunnelPath():Boolean {
 			var queue:Vector.<BaseGameObj> = new Vector.<BaseGameObj>;
 			var pathMatrix:Vector.<Vector.<BaseGameObj>> = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
@@ -330,15 +356,19 @@ package worlds
 			HandleTunnelIndex();
 		}
 		private function HandleTunnelIndex():void {
+			if (!Input.mouseWheel) {
+				return;
+			}
+			var delta:int = Input.mouseWheelDelta;
 			if (!placingTunnel) {
-				if (Input.pressed(Key.R)) {
+				if (delta < 0) {
 					tunnelIndex--;
 					if (tunnelIndex < 0) {
 						tunnelIndex = tunnelManager.tunnels.length - 1;
 					}
 					trace("Tunnel Index = " + tunnelIndex.toString());
 				}
-				else if (Input.pressed(Key.Y)) {
+				else if (delta > 0) {
 					tunnelIndex++;
 					if (tunnelIndex >= tunnelManager.tunnels.length) {
 						tunnelIndex = 0;
@@ -347,7 +377,7 @@ package worlds
 				}
 			}
 			else {
-				if (Input.pressed(Key.R)) {
+				if ( delta < 0) {
 					tunnelIndex--;
 					if (tunnelIndex < 0) {
 						tunnelIndex = tunnelManager.tunnels.length - 1;
@@ -355,7 +385,7 @@ package worlds
 					trace("Tunnel Index = " + tunnelIndex.toString());
 					resetTunnelObj();
 				}
-				else if (Input.pressed(Key.Y)) {
+				else if ( delta > 0) {
 					tunnelIndex++;
 					if (tunnelIndex >= tunnelManager.tunnels.length) {
 						tunnelIndex = 0;
