@@ -23,7 +23,7 @@
 	
 	<tunnels>
 	
-	<!-- Tuneis verticais -->
+	<!-- Tuneis verticais 1x3 -->
 	
 		<tunnel width="3" height="3">
 			<piece type="6" posX="1" posY="0" />
@@ -41,90 +41,90 @@
 			<piece type="10" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="1" posX="1" posY="0" />
+			<piece type="13" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="12" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="1" posX="1" posY="0" />
+			<piece type="13" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="17" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="1" posX="1" posY="0" />
+			<piece type="13" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="10" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="2" posX="1" posY="0" />
+			<piece type="8" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="12" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="2" posX="1" posY="0" />
+			<piece type="8" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="17" posX="1" posY="2" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="2" posX="1" posY="0" />
+			<piece type="8" posX="1" posY="0" />
 			<piece type="0" posX="1" posY="1" />
 			<piece type="10" posX="1" posY="2" />
 		</tunnel>
 		
-		<!-- Tuneis horizontais -->
+		<!-- Tuneis horizontais 3x1 -->
 		
 		<tunnel width="3" height="3">
-			<piece type="3" posX="0" posY="1" />
+			<piece type="15" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="3" posX="2" posY="1" />
+			<piece type="9" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="1" posX="0" posY="1" />
+			<piece type="7" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="3" posX="2" posY="1" />
+			<piece type="9" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="4" posX="0" posY="1" />
+			<piece type="16" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="3" posX="2" posY="1" />
+			<piece type="9" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="3" posX="0" posY="1" />
+			<piece type="15" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="2" posX="2" posY="1" />
+			<piece type="14" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="1" posX="0" posY="1" />
+			<piece type="7" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="2" posX="2" posY="1" />
+			<piece type="14" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="4" posX="0" posY="1" />
+			<piece type="16" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="2" posX="2" posY="1" />
+			<piece type="14" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="3" posX="0" posY="1" />
+			<piece type="15" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="5" posX="2" posY="1" />
+			<piece type="11" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="1" posX="0" posY="1" />
+			<piece type="7" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="5" posX="2" posY="1" />
+			<piece type="11" posX="2" posY="1" />
 		</tunnel>
 		<tunnel width="3" height="3">
-			<piece type="4" posX="0" posY="1" />
+			<piece type="16" posX="0" posY="1" />
 			<piece type="3" posX="1" posY="1" />
-			<piece type="5" posX="2" posY="1" />
+			<piece type="11" posX="2" posY="1" />
 		</tunnel>
 		
 		<!-- cotovelos -->
 		
 		<tunnel width="2" height="2">
-			<piece type="3" posX="0" posY="0" />
+			<piece type="15" posX="0" posY="0" />
 			<piece type="2" posX="1" posY="0" />
-			<piece type="0" posX="1" posY="1" />
+			<piece type="12" posX="1" posY="1" />
 		</tunnel>
 		<tunnel width="2" height="2">
 			<piece type="0" posX="0" posY="0" />
@@ -140,6 +140,84 @@
 			<piece type="3" posX="1" posY="0" />
 			<piece type="1" posX="0" posY="0" />
 			<piece type="0" posX="0" posY="1" />
+		</tunnel>
+		
+	<!-- Tuneis verticais 1x2 -->
+	
+		<tunnel width="1" height="2">
+			<piece type="6" posX="0" posY="0" />
+			<piece type="12" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="6" posX="0" posY="0" />
+			<piece type="17" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="6" posX="0" posY="0" />
+			<piece type="10" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="13" posX="0" posY="0" />
+			<piece type="12" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="13" posX="0" posY="0" />
+			<piece type="17" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="13" posX="0" posY="0" />
+			<piece type="10" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="8" posX="0" posY="0" />
+			<piece type="12" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="8" posX="0" posY="0" />
+			<piece type="17" posX="0" posY="1" />
+		</tunnel>
+		<tunnel width="1" height="2">
+			<piece type="8" posX="0" posY="0" />
+			<piece type="10" posX="0" posY="1" />
+		</tunnel>
+		
+		<!-- Tuneis horizontais 2x1 -->
+		
+		<tunnel width="2" height="1">
+			<piece type="15" posX="0" posY="0" />
+			<piece type="9" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="7" posX="0" posY="0" />
+			<piece type="9" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="16" posX="0" posY="0" />
+			<piece type="9" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="15" posX="0" posY="0" />
+			<piece type="14" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="7" posX="0" posY="0" />
+			<piece type="14" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="16" posX="0" posY="0" />
+			<piece type="14" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="15" posX="0" posY="0" />
+			<piece type="11" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="7" posX="0" posY="0" />
+			<piece type="11" posX="1" posY="0" />
+		</tunnel>
+		<tunnel width="2" height="1">
+			<piece type="16" posX="0" posY="0" />
+			<piece type="11" posX="1" posY="0" />
 		</tunnel>
 		
 	</tunnels>
