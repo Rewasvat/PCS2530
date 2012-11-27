@@ -2,6 +2,7 @@ package entities
 {
 	import net.flashpunk.Entity;
 	import net.flashpunk.graphics.Image;
+	import net.flashpunk.masks.Pixelmask;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.FP;
 	import utils.Constants;
@@ -15,18 +16,27 @@ package entities
 	public class Cursor extends BaseGameObj 
 	{
 		[Embed(source = '../assets/cursor.png')] private const CURSOR:Class;
-		private var image:Image;
+		private var tileImage:Image;
 		
-		public function get color():uint { return this.image.color; }
-		public function set color(c:uint):void { this.image.color = c;  }
+		[Embed(source = '../assets/picursor2.png')] private const PICURSOR:Class;
+		private var mouseImage:Image;
 		
+		public function get color():uint { return this.tileImage.color; }
+		public function set color(c:uint):void { this.tileImage.color = c;  }
 		
+		private var cursorCollision:Pixelmask;
 		
 		public function Cursor() 
 		{
-			image = new Image(CURSOR);
-			graphic = image;
-			layer = 0;
+			tileImage = new Image(CURSOR);
+			graphic = tileImage;
+			layer = -3;
+			
+			
+			mouseImage = new Image(PICURSOR);
+			addGraphic(mouseImage);
+			cursorCollision = new Pixelmask(PICURSOR);
+			mask = cursorCollision;
 		}
 		
 		override public function update():void 
@@ -35,6 +45,9 @@ package entities
 			
 			gridX = int(Input.mouseX / Constants.TILE_WIDTH) - 1;
 			gridY = int(Input.mouseY / Constants.TILE_HEIGHT) - 1;
+			
+			mouseImage.x = Input.mouseX - x - Constants.TILE_WIDTH;
+			mouseImage.y = Input.mouseY - y - Constants.TILE_HEIGHT;
 			
 			var w:GameWorld = world as GameWorld;
 			if (w.map.getTile(gridX + 1, gridY + 1) == GameMap.NONE || w.isTunnelIn(gridX+1, gridY+1) ) {
@@ -45,6 +58,13 @@ package entities
 			}
 			else {
 				color = 0xff0000;
+			}
+			
+			if (collide("hud", x, y)) {
+				tileImage.visible = false;
+			}
+			else {
+				tileImage.visible = true;
 			}
 		}
 	}

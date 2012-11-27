@@ -18,6 +18,9 @@ package entities
 		public function get color():uint { return this.tiles.color; }
 		public function set color(c:uint):void { this.tiles.color = c;  }
 		
+		public function get alpha():Number { return this.tiles.alpha; }
+		public function set alpha(a:Number):void { this.tiles.alpha = a;  }
+		
 		private var manager:TunnelManager;
 		
 		public var tunnelWidth:int;

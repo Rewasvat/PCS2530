@@ -26,8 +26,8 @@ package utils
 			graphic = tiles;
 			layer = 2;
 			tiles.setRect(0, 0, Constants.MAP_WIDTH, Constants.MAP_HEIGHT, BORDER);
-			tiles.setRect(Constants.BORDER_SIZE, Constants.BORDER_SIZE,
-						  Constants.MAP_WIDTH -Constants.BORDER_SIZE*2, Constants.MAP_HEIGHT-Constants.BORDER_SIZE*2,
+			tiles.setRect(Constants.BORDER_SIZE+Constants.MENU_COLUMNS, Constants.BORDER_SIZE,
+						  Constants.MAP_WIDTH -Constants.BORDER_SIZE*2-Constants.MENU_COLUMNS, Constants.MAP_HEIGHT-Constants.BORDER_SIZE*2,
 						  DIRT);
 		}
 		

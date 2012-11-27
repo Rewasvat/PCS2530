@@ -30,7 +30,7 @@ package worlds
 		public var player:Player;
 		public var map:GameMap;
 		private var fog:Fog;
-		private var cursor:Cursor;
+		public var cursor:Cursor;
 		private var hud:HUD;
 		public var tunnelManager:TunnelManager;
 		private var placingTunnel:Boolean ;
@@ -68,7 +68,7 @@ package worlds
 			}
 			
 			if (Math.random() > 0.5) {
-				entryPoint = BaseGameObj.CreateDummy(0, randInt(1, Constants.MAP_HEIGHT - 2));
+				entryPoint = BaseGameObj.CreateDummy(Constants.MENU_COLUMNS, randInt(1, Constants.MAP_HEIGHT - 2));
 				map.setTile(entryPoint.gridX, entryPoint.gridY, GameMap.POINT_HORIZONTAL);
 				map.setTile(entryPoint.gridX+1, entryPoint.gridY, GameMap.NONE);
 				exitPoint = BaseGameObj.CreateDummy(Constants.MAP_WIDTH - Constants.BORDER_SIZE, randInt(1, Constants.MAP_HEIGHT - 2));
@@ -107,7 +107,7 @@ package worlds
 			var a:int = start;
 			var b:int = end;
 			if (useOffset) {
-				a += Constants.SPAWN_OFFSET;
+				a += Constants.SPAWN_OFFSET + Constants.MENU_COLUMNS;
 				b -= Constants.SPAWN_OFFSET;
 			}
 			return a + int(Math.random() * (b - a));
@@ -192,6 +192,14 @@ package worlds
 				camera.x = 0;
 				camera.y = 0;
 			}
+			
+			if (Input.pressed(Key.DELETE)) {
+				player.gold_amount += 1;
+			}
+		}
+		
+		override public function render():void {
+			super.render();
 		}
 		
 		public function UpdateMap():void {
@@ -209,10 +217,10 @@ package worlds
 				return;
 			}
 			
-			totalRisk = 0;
+			totalRisk = getTotalRiskFromTileRegion(player.gridX, player.gridY);
 			var risk:Number;
 			var i:int, j:int;
-			for (i = 0; i < Constants.MAP_WIDTH; i++) {
+			/*for (i = 0; i < Constants.MAP_WIDTH; i++) {
 				for (j = 0; j < Constants.MAP_HEIGHT; j++) {
 					if (map.getTile(i, j) == GameMap.NONE && grid[i][j] == null) {
 						risk = getRiskForTile(i, j);
@@ -220,7 +228,7 @@ package worlds
 						riskMatrix[i][j] = risk;
 					}
 				}
-			}
+			}*/
 			if (!cavingIn && totalRisk > Constants.RISK_THRESHOLD) {
 				cavingIn = true;
 				caveInCounter = 0;
@@ -280,9 +288,41 @@ package worlds
 			return caveInCounter / caveInLimit;
 		}
 		
+		private function getTotalRiskFromTileRegion(px:int, py:int):Number {
+			var queue:Vector.<BaseGameObj> = new Vector.<BaseGameObj>;
+			var pathMatrix:Vector.<Vector.<BaseGameObj>> = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
+			var i:int;
+			for (i=0; i < Constants.MAP_WIDTH; i++) {
+				pathMatrix[i] = new Vector.<BaseGameObj>(Constants.MAP_HEIGHT);
+			}
+			
+			/* Place first coord in the queue */
+			queue.push( BaseGameObj.CreateDummy(px, py) );
+			var obj:BaseGameObj;
+			var risk:Number = 0;
+			while (queue.length > 0) {
+				/* grab coord from queue */
+				obj = queue.shift();
+				/* check if we already passed in it */
+				if (pathMatrix[obj.gridX][obj.gridY] != null) {
+					continue;
+				}
+				pathMatrix[obj.gridX][obj.gridY] = obj;
+				
+				/* check and place adjacent coords in the queue */
+				if (map.getTile(obj.gridX, obj.gridY) == GameMap.NONE && !isTunnelIn(obj.gridX, obj.gridY)) {
+					risk += getRiskForTile(obj.gridX, obj.gridY);
+					queue.push( BaseGameObj.CreateDummy(obj.gridX - 1, obj.gridY) );
+					queue.push( BaseGameObj.CreateDummy(obj.gridX + 1, obj.gridY) );
+					queue.push( BaseGameObj.CreateDummy(obj.gridX, obj.gridY - 1) );
+					queue.push( BaseGameObj.CreateDummy(obj.gridX, obj.gridY + 1) );
+				}
+			}
+			
+			return risk;
+		}
 		
 		private function checkTunnelPath():Boolean {
-			if (Input.pressed(Key.DELETE)) { return true; }
 			var queue:Vector.<BaseGameObj> = new Vector.<BaseGameObj>;
 			var pathMatrix:Vector.<Vector.<BaseGameObj>> = new Vector.<Vector.<BaseGameObj>>(Constants.MAP_WIDTH);
 			var i:int;
@@ -357,15 +397,17 @@ package worlds
 		
 		public function UpdateTunnelCreation():void {
 			if (finished) { return; }
+			updateTunnelMenu();
 			if (!placingTunnel) {
 				if (Input.pressed(Key.SPACE)) {
 					placingTunnel = true;
 					resetTunnelObj();
+					cursor.visible = false;
 				}
 			}
 			else {
 				tunnelObj.gridX = int(Input.mouseX/Constants.TILE_WIDTH);
-				tunnelObj.gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
+				tunnelObj.gridY = int(Input.mouseY / Constants.TILE_HEIGHT);
 				if (checkForTunnelPlacement()) {
 					//trace("trying to place tunnel");
 					tunnelObj.color = 0x00ff00;
@@ -379,6 +421,7 @@ package worlds
 				else if (Input.pressed(Key.SPACE)) {
 					placingTunnel = false;
 					remove(tunnelObj);
+					cursor.visible = true;
 					tunnelObj = null;
 				}
 				else {
@@ -427,11 +470,19 @@ package worlds
 				}
 			}
 		}
+		public function MenuSetTunnelIndex(index:int):void {
+			tunnelIndex = index;
+			if (placingTunnel) {
+				resetTunnelObj();
+			}
+		}
 		private function resetTunnelObj():void {
 			if (tunnelObj) {
 				remove(tunnelObj);
 			}
 			tunnelObj = tunnelManager.tunnels[tunnelIndex].Clone();
+			tunnelObj.gridX = int(Input.mouseX/Constants.TILE_WIDTH);
+			tunnelObj.gridY = int(Input.mouseY/Constants.TILE_HEIGHT);
 			add(tunnelObj);
 		}
 		private function checkForTunnelPlacement():Boolean {
@@ -462,7 +513,79 @@ package worlds
 			tunnelObj.color = 0xffffff;
 			UpdateMap();
 			
+			removeTunnelFromMenu(tunnelIndex);
 			tunnelManager.UpdateTunnelList(tunnelIndex);
+			setupTunnelForMenu(tunnelIndex);
+			
+		}
+		/****/
+		public function setupTunnelMenu():void {
+			for (var i:int = 0; i < 3; i++) {
+				setupTunnelForMenu(i);
+			}
+			updateTunnelMenu();
+		}
+		private function setupTunnelForMenu(index:int):void {
+			var t:Tunnel = tunnelManager.tunnels[index];
+			t.layer = -3;
+			t.color = 0xffffff;
+			hud.SetTunnelCoordsForMenu(t, index);
+			add(t);
+		}
+		private function updateTunnelMenu():void {
+			var gx:int, gy:int;
+			if (!tunnelManager.loaded) { return; }
+			for (var i:int = 0; i < 3; i++) {
+				var t:Tunnel = tunnelManager.tunnels[i];
+				/*gx = tunnelObj.gridX - tunnelManager.maxTunnelWidth;
+				gy = tunnelObj.gridY + tunnelManager.maxTunnelHeight * (i - 1);
+				t.gridX = gx;
+				t.gridY = gy;*/
+				if (i == tunnelIndex) {
+					t.color = 0x0000ff;
+				}
+				else {
+					t.color = 0xffffff;
+				}
+			}
+		}
+		private function removeTunnelMenu():void {
+			for (var i:int = 0; i < 3; i++) {
+				removeTunnelFromMenu(i);
+			}
+		}
+		private function removeTunnelFromMenu(index:int):void {
+			var t:Tunnel = tunnelManager.tunnels[index];
+			remove(t);
+		}
+		public function aleatorizeTunnels():void {
+			if (player.gold_amount >= Constants.ALEATORIZE_COST) {
+				player.gold_amount -= Constants.ALEATORIZE_COST;
+				
+				removeTunnelMenu();
+				
+				tunnelManager.UpdateTunnelList(0);
+				tunnelManager.UpdateTunnelList(1);
+				tunnelManager.UpdateTunnelList(2);
+
+				setupTunnelMenu();
+				if (placingTunnel) {
+					resetTunnelObj();
+				}
+				
+			}
+		}
+		
+		public function setupFogPoint():void {
+			if (player.gold_amount >= Constants.REVEAL_FOG_COST) {
+				player.gold_amount -= Constants.REVEAL_FOG_COST;
+				
+				player.revealFogMode = true;
+				Input.mousePressed = false;
+			}
+		}
+		public function revealFogPoint(px:int, py:int):void {
+			fog.ClearFogIn(px, py, Constants.VISION_RANGE);
 		}
 		
 		private function canGoToFrom(x:int, y:int, dir:String):Boolean {

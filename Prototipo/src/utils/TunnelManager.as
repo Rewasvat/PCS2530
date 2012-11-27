@@ -4,6 +4,7 @@ package utils
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
 	import net.flashpunk.FP;
+	import worlds.GameWorld;
 	import entities.Tunnel;
 	
 	/**
@@ -18,6 +19,7 @@ package utils
 		
 		public var maxTunnelWidth:int;
 		public var maxTunnelHeight:int;
+		public var loaded:Boolean;
 		
 		public function TunnelManager() 
 		{
@@ -26,6 +28,7 @@ package utils
 			blocks = new Vector.<TunnelBlock>;
 			maxTunnelWidth = 0;
 			maxTunnelHeight = 0;
+			loaded = false;
 			LoadTunnels();
 		}
 		
@@ -64,6 +67,10 @@ package utils
 			tunnels.push( randTunnel() );
 			tunnels.push( randTunnel() );
 			tunnels.push( randTunnel() );
+			
+			loaded = true;
+			var w:GameWorld = FP.world as GameWorld;
+			w.setupTunnelMenu();
 		}
 		private function randTunnel():Tunnel {
 			var a:int = 0;

@@ -24,6 +24,7 @@ package entities
 		
 		public var canMove:Boolean;
 		public var gold_amount:int;
+		public var revealFogMode:Boolean;
 		
 		private static const DOWN:int = 0;
 		private static const LEFT:int = 1;
@@ -38,6 +39,7 @@ package entities
 			layer = 0;
 			canMove = true;
 			gold_amount = 0;
+			revealFogMode = false;
 		}
 		
 		override public function update():void
@@ -65,10 +67,17 @@ package entities
 		
 		public function UpdateMovement():Boolean 
 		{
-			if(Input.mousePressed && canMove)
+			var posX:int = int(Input.mouseX/Constants.TILE_WIDTH);
+			var posY:int = int(Input.mouseY/Constants.TILE_HEIGHT);
+			if (revealFogMode) {
+				if (Input.mousePressed) {
+					var w:GameWorld = world as GameWorld;
+					w.revealFogPoint(posX, posY);
+					revealFogMode = false;
+				}
+			}
+			else if(Input.mousePressed && canMove)
 			{
-				var posX:int = int(Input.mouseX/Constants.TILE_WIDTH);
-				var posY:int = int(Input.mouseY/Constants.TILE_HEIGHT);
 				if (verifyTiles(posX, posY))
 				{
 					gridX = posX;
@@ -82,8 +91,8 @@ package entities
 		
 		public function verifyTiles(gX:int,gY:int):Boolean
 		{
-			var myworld:GameWorld = world as GameWorld;
-			if (myworld.canGoTo(gX, gY))
+			var w:GameWorld = world as GameWorld;
+			if (w.canGoTo(gX, gY))
 			{
 				return true;
 			}
