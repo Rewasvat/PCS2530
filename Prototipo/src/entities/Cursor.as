@@ -18,7 +18,7 @@ package entities
 		[Embed(source = '../assets/cursor.png')] private const CURSOR:Class;
 		private var tileImage:Image;
 		
-		[Embed(source = '../assets/picursor2.png')] private const PICURSOR:Class;
+		[Embed(source = '../assets/cursor_picareta.png')] private const PICURSOR:Class;
 		private var mouseImage:Image;
 		
 		public function get color():uint { return this.tileImage.color; }
