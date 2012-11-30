@@ -122,7 +122,7 @@ package entities
 					w.setupFogPoint();
 				}
 				else if (checkMouseInRect(accr3x, accr3y, accrW, accrH)) {
-					
+					w.useGoldPickaxe();
 				}
 			}
 		}

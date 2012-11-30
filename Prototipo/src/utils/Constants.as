@@ -33,6 +33,7 @@ package utils
 		
 		public static const ALEATORIZE_COST:int = 3;
 		public static const REVEAL_FOG_COST:int = 3;
+		public static const GOLD_PICKAXE_COST:int = 3;
 	}
 
 }

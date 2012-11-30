@@ -40,6 +40,7 @@ package worlds
 		private var caveInLimit:Number;
 		private var cavingIn:Boolean;
 		private var totalRisk:Number;
+		private var hasGoldPickaxe:Boolean;
 		
 		public var grid:Vector.<Vector.<BaseGameObj>>;
 		private var riskMatrix:Vector.<Vector.<Number>>;
@@ -56,6 +57,7 @@ package worlds
 			caveInLimit = 1;
 			cavingIn = false;
 			totalRisk = 0;
+			hasGoldPickaxe = false;
 			Mouse.hide();
 			
 			map = new GameMap;
@@ -582,10 +584,21 @@ package worlds
 				
 				player.revealFogMode = true;
 				Input.mousePressed = false;
+				cursor.ChangeGraphicTo(cursor.fogImage);
 			}
 		}
 		public function revealFogPoint(px:int, py:int):void {
 			fog.ClearFogIn(px, py, Constants.VISION_RANGE);
+			cursor.UseDefaultGraphic();
+		}
+		public function useGoldPickaxe():void {
+			if (hasGoldPickaxe)	{ return; }
+			if (player.gold_amount >= Constants.GOLD_PICKAXE_COST) {
+				player.gold_amount -= Constants.GOLD_PICKAXE_COST;
+				
+				hasGoldPickaxe = true;
+				cursor.useGoldPickaxe();
+			}
 		}
 		
 		private function canGoToFrom(x:int, y:int, dir:String):Boolean {
