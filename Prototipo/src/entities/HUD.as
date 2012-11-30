@@ -32,11 +32,11 @@ package entities
 		private var riskText:Text;
 		
 		private const slot1x:Number = 10;
-		private const slot1y:Number = 67;
+		private const slot1y:Number = 57;
 		private const slot2x:Number = 10;
-		private const slot2y:Number = 172;
+		private const slot2y:Number = 162;
 		private const slot3x:Number = 10;
-		private const slot3y:Number = 277;
+		private const slot3y:Number = 267;
 		
 		private const accr1x:Number = 12;
 		private const accr1y:Number = 382;
